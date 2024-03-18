@@ -13,12 +13,6 @@ import plotly.io as pio
 import streamlit.components.v1 as components
 
 
-# Function to load and display HTML content
-def display_html(file_path):
-    with open(file_path, "r") as f:
-        html_content = f.read()
-    components.html(html_content, height=600)
-
 
 
 with st.sidebar:
@@ -58,32 +52,99 @@ if selected == "Crime Pattern Analysis":
         st.markdown("### Choropleth Maps")
 
         choropleth_metric = st.selectbox("Select Metric", ["Crime Incidents", "Victim Count", "Accused Count"], key="choropleth_metric")
-        file_paths = {
-            "Crime Incidents": "assets/Visualisations/Crime Pattern Analysis/Choropleth map/choropleth_map_FIRNo.html",
-            "Victim Count": "assets/Visualisations/Crime Pattern Analysis/Choropleth map/choropleth_map_Victim.html",
-            "Accused Count": "assets/Visualisations/Crime Pattern Analysis/Choropleth map/choropleth_map_Accused.html"
-        }
-        display_html(file_paths.get(choropleth_metric, ""))
+        if choropleth_metric == "Crime Incidents":
+            # Load the HTML file
+            with open("assets/Visualisations/Crime Pattern Analysis/Choropleth map/choropleth_map_FIRNo.html", "r") as f:
+                html_content = f.read()
+
+            # Render the HTML content in Streamlit
+            components.html(html_content, height=600)
+
+        elif choropleth_metric == "Victim Count":
+            # Load the HTML file
+            with open("assets/Visualisations/Crime Pattern Analysis/Choropleth map/choropleth_map_Victim.html", "r") as f:
+                html_content = f.read()
+
+            # Render the HTML content in Streamlit
+            components.html(html_content, height=600)
+
+        else:
+            # Load the HTML file
+            with open("assets/Visualisations/Crime Pattern Analysis/Choropleth map/choropleth_map_Accused.html", "r") as f:
+                html_content = f.read()
+
+            # Render the HTML content in Streamlit
+            components.html(html_content, height=600)
+
 
 
     with st.container():
         st.markdown("### Heatmap")
         heatmap_metric = st.selectbox("Select Metric", ["Crimes", "Year", "Month"], key="heatmap_metric")
 
-        file_paths = {
-            "Crimes": "assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Crimes",
-            "Year": "assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Year",
-            "Month": "assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Month"
-        }
-        display_html(file_paths.get(heatmap_metric, ""))
+        if heatmap_metric == "Crimes":
+            # Load the HTML file
+            with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Crimes", "r") as f:
+                html_content = f.read()
+            # Render the HTML content in Streamlit
+            components.html(html_content, height=600)
+
+        if heatmap_metric == "Year":
+            # Load the HTML file
+            with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Year", "r") as f:
+                html_content = f.read()
+            # Render the HTML content in Streamlit
+            components.html(html_content, height=600)
+
+        if heatmap_metric == "Month":
+            # Load the HTML file
+            with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Month", "r") as f:
+                html_content = f.read()
+            # Render the HTML content in Streamlit
+            components.html(html_content, height=600)
 
 
-    with st.container():
-        st.markdown("### Cluster Analysis")
-        folium_static(cluster_map)
 
 
 
 
 
+# # Select relevant features
+# features = ['Latitude', 'Longitude', 'CrimeGroup_Name', 'CrimeHead_Name']
+# crime_data = crime_data[features]
 
+# # Handle missing values if any
+# crime_data = crime_data.dropna(subset=features)
+
+# # Convert latitude and longitude to coordinates
+# coords = crime_data[['Latitude', 'Longitude']].values
+
+# # Perform DBSCAN clustering
+# dbscan = DBSCAN(eps=0.01, min_samples=10)
+# clusters = dbscan.fit_predict(np.radians(coords))
+
+# # Add cluster labels to the dataset
+# crime_data['Cluster'] = clusters
+
+# # Interactive Folium Map
+# crime_map = folium.Map(location=[crime_data['Latitude'].mean(), crime_data['Longitude'].mean()], zoom_start=8)
+
+# # Add markers for each crime incident, colored by cluster
+# for idx, row in crime_data.iterrows():
+#     folium.CircleMarker(
+#         location=[row['Latitude'], row['Longitude']],
+#         radius=5,
+#         color='red' if row['Cluster'] == -1 else 'green',
+#         fill=True,
+#         fill_color='red' if row['Cluster'] == -1 else 'green',
+#         fill_opacity=0.6,
+#         tooltip=f"Cluster: {row['Cluster']}<br>Crime Group: {row['CrimeGroup_Name']}<br>Crime Head: {row['CrimeHead_Name']}"
+#     ).add_to(crime_map)
+
+# # Add a heatmap layer
+# crimes = crime_data[['Latitude', 'Longitude']].values.tolist()
+# heatmap = plugins.HeatMap(crimes, radius=15)
+# crime_map.add_child(heatmap)
+
+# # Display the Folium map
+# crime_map
