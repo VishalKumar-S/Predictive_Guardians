@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
-import streamlit as st
 import plotly.express as px
 from statsmodels.tsa.seasonal import seasonal_decompose
 import folium
@@ -11,7 +10,8 @@ import numpy as np
 import requests
 import plotly.io as pio
 import streamlit.components.v1 as components
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 
@@ -41,6 +41,58 @@ with st.sidebar:
         "separator": {"margin": "5px 0px", "border-color": "#343a40"},
     }
     )
+
+
+
+def create_criminal_profiling_dashboard():
+    
+    Criminal_Profiling = pd.read_csv('datasets/Criminal Profiling/Criminal_Profiling.csv')
+
+    st.title("Criminal Profiling Dashboard")
+
+    
+    # Age Distribution
+    st.subheader("Age Distribution")
+    fig = px.histogram(Criminal_Profiling, x="age", nbins=20, title="Age Distribution of Criminals")
+    st.plotly_chart(fig)
+
+
+    # Gender Analysis
+    st.subheader("Gender Analysis")
+    gender_counts = Criminal_Profiling['Sex'].value_counts()
+    fig = px.pie(gender_counts, values=gender_counts.values, names=gender_counts.index, title="Gender Distribution")
+    st.plotly_chart(fig)
+
+    # Caste Analysis
+    st.subheader("Caste Analysis")
+    caste_counts = Criminal_Profiling[Criminal_Profiling['Caste'] != 'unknown']['Caste'].value_counts()
+    fig = px.bar(x=caste_counts.index[:10], y=caste_counts.values[:10], title="Top 10 Caste Distribution based on Crimes", labels={'x': 'Caste', 'y': 'Count'})
+    st.plotly_chart(fig)
+
+    # Occupation Analysis
+    st.subheader("Occupation Analysis")
+    occupation_counts = Criminal_Profiling[(Criminal_Profiling['Occupation'] != "unknown") & (Criminal_Profiling['Occupation'] != "Others PI Specify")]['Occupation'].value_counts()
+    occupation_counts = occupation_counts.sort_values(ascending=False)[:10]  # Sort in descending order
+    fig = px.bar(x=occupation_counts.values[::-1], y=occupation_counts.index[::-1], orientation='h', title="Top 10 Occupation Associated with Criminal Activities", labels={'x': 'Count', 'y': 'Occupation'})
+    st.plotly_chart(fig)
+
+
+    # Top Crime Categories and Sub-Categories
+    st.subheader("Top Crime Categories and Sub-Categories")
+    top_crime_groups = Criminal_Profiling['Crime_Group1'].value_counts().nlargest(5)
+    top_crime_heads = Criminal_Profiling['Crime_Head2'].value_counts().nlargest(5)
+    
+    tabs = st.tabs(["Category"," Sub- Category"])
+    
+
+    with tabs[0]:
+        fig = px.bar(x=top_crime_groups.index, y=top_crime_groups.values, title="Top 5 Crime Groups Categories", labels={'x': 'Crime Group', 'y': 'Count'})
+        st.plotly_chart(fig)
+
+    with tabs[1]:
+        fig = px.bar(x=top_crime_heads.index, y=top_crime_heads.values, title="Top 5 Crime Groups Sub-Categories", labels={'x': 'Crime Head', 'y': 'Count'})
+        st.plotly_chart(fig)
+
 
 
 if selected == "Home":
@@ -78,30 +130,30 @@ if selected == "Crime Pattern Analysis":
 
 
 
-    with st.container():
-        st.markdown("### Heatmap")
-        heatmap_metric = st.selectbox("Select Metric", ["Crimes", "Year", "Month"], key="heatmap_metric")
+    # with st.container():
+    #     st.markdown("### Heatmap")
+    #     heatmap_metric = st.selectbox("Select Metric", ["Crimes", "Year", "Month"], key="heatmap_metric")
 
-        if heatmap_metric == "Crimes":
-            # Load the HTML file
-            with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Crimes", "r") as f:
-                html_content = f.read()
-            # Render the HTML content in Streamlit
-            components.html(html_content, height=600)
+    #     if heatmap_metric == "Crimes":
+    #         # Load the HTML file
+    #         with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Crimes", "r") as f:
+    #             html_content = f.read()
+    #         # Render the HTML content in Streamlit
+    #         components.html(html_content, height=600)
 
-        if heatmap_metric == "Year":
-            # Load the HTML file
-            with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Year", "r") as f:
-                html_content = f.read()
-            # Render the HTML content in Streamlit
-            components.html(html_content, height=600)
+    #     if heatmap_metric == "Year":
+    #         # Load the HTML file
+    #         with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Year", "r") as f:
+    #             html_content = f.read()
+    #         # Render the HTML content in Streamlit
+    #         components.html(html_content, height=600)
 
-        if heatmap_metric == "Month":
-            # Load the HTML file
-            with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Month", "r") as f:
-                html_content = f.read()
-            # Render the HTML content in Streamlit
-            components.html(html_content, height=600)
+    #     if heatmap_metric == "Month":
+    #         # Load the HTML file
+    #         with open("assets/Visualisations/Crime Pattern Analysis/Heat map/Heat_map_Month", "r") as f:
+    #             html_content = f.read()
+    #         # Render the HTML content in Streamlit
+    #         components.html(html_content, height=600)
 
 
 
@@ -148,3 +200,7 @@ if selected == "Crime Pattern Analysis":
 
 # # Display the Folium map
 # crime_map
+
+
+if selected == "Criminal Profiling":
+    create_criminal_profiling_dashboard()
