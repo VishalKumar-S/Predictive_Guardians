@@ -6,3 +6,5 @@ folium
 plotly
 statsmodels
 scikit-learn
+matplotlib
+seaborn
