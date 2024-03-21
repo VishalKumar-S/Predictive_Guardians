@@ -3,7 +3,7 @@ from category_encoders import TargetEncoder
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
-
+import pickle
 
 def clean_recividism_model(clean_acused):
     # Separate features and target
@@ -24,6 +24,10 @@ def clean_recividism_model(clean_acused):
     # Encoding 'Sex' feature using OneHotEncoder for training data
     sex_encoder = OneHotEncoder(handle_unknown='ignore', drop='first')
     X_train = pd.concat([X_train.drop('Sex', axis=1), pd.get_dummies(X_train['Sex'], drop_first=True)], axis=1)
+
+    # Save the fitted TargetEncoder
+    with open('models/Recidivism_model/target_encoder.pkl', 'wb') as file:
+        pickle.dump(categorical_transformer, file)
 
     # Encoding 'Sex' feature using OneHotEncoder for testing data
     X_test = pd.concat([X_test.drop('Sex', axis=1), pd.get_dummies(X_test['Sex'], drop_first=True)], axis=1)

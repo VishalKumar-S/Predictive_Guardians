@@ -27,6 +27,8 @@ def ingest_and_clean_recidivism_data():
     clean_acused = clean_acused.drop_duplicates()
     clean_acused.reset_index(drop = True,inplace = True )
 
+    clean_acused.to_csv("datasets/Predictive Modeling/Recidivism_cleaned_data.csv")
+
     return clean_acused
 
 
