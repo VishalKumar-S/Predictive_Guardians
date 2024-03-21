@@ -8,3 +8,5 @@ statsmodels
 scikit-learn
 matplotlib
 seaborn
+category_encoders --upgrade
+h2o

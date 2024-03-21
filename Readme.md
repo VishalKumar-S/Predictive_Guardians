@@ -18,3 +18,8 @@ To find the correct latitude and longitude of the crime happened,
 to Create  bar charts to visualize crime trends over time (years, months, days) for each district or crime type. Analyze seasonality and cyclic patterns and added 
 Interactive Elements: Allow users to select the time granularity (year, month, day), filter by district or crime type, and explore trends using interactive tooltips.
 using Plotly for interactive time-series visualizations.
+
+
+## System Requirements
+
+Before running this application, ensure that you have Java Runtime Environment (JRE) installed on your system. You can download and install JRE from [here](https://www.oracle.com/java/technologies/javase-jre8-downloads.html).
