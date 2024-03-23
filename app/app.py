@@ -16,7 +16,7 @@ from streamlit_folium import folium_static
 import pickle
 from Criminal_Profiling import create_criminal_profiling_dashboard
 from Crime_Pattern_Analysis import *
-
+from Predictive_modeling import *
 
 
 with st.sidebar:
@@ -59,7 +59,7 @@ if selected == "Crime Pattern Analysis":
         url = "https://raw.githubusercontent.com/adarshbiradar/maps-geojson/master/states/karnataka.json"
         response = requests.get(url)
         geojson_data = response.json()
-        crime_pattern_analysis = pd.read_csv("datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv")
+        crime_pattern_analysis = pd.read_csv("../datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv")
         mean_lat = crime_pattern_analysis['Latitude'].mean()
         mean_lon = crime_pattern_analysis['Longitude'].mean()
         return mean_lat,mean_lon, geojson_data, crime_pattern_analysis
@@ -106,19 +106,21 @@ if selected == "Crime Pattern Analysis":
 
 
 
-
-
-@st.cache_resource
-def load_target_encoder():
-    with open('models/Recidivism_model/target_encoder.pkl', 'rb') as file:
-        target_encoder = pickle.load(file)
-    return target_encoder
-
 if selected == "Criminal Profiling":
     create_criminal_profiling_dashboard()
 
 
 if selected == "Predictive Modeling":
-    predictive_modeling()
+    selected_component = st.radio("Select Prediction Component", ["Recidivism Prediction", "Crime Type Prediction", "Crime Hotspot Prediction"])
+
+    # Display the selected component
+    if selected_component == "Recidivism Prediction":
+        predictive_modeling_recidivism()
+    elif selected_component == "Crime Type Prediction":
+        predictive_modeling_crime_type()
+    elif selected_component == "Crime Hotspot Prediction":
+        predictive_modeling_hotspot()
+
+    
 
     

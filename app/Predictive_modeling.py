@@ -1,4 +1,4 @@
-import sreamlit as st
+import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import plotly.express as px
@@ -14,26 +14,54 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from streamlit_folium import folium_static
 import pickle
-
+import h2o
+from h2o.automl import H2OAutoML
+import pandas as pd
+import folium
+from folium.plugins import HeatMap, Fullscreen
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import calinski_harabasz_score
 
 
 @st.cache_data
-def load_data()
-    return pd.read_csv("datasets/Predictive Modeling/Recidivism_cleaned_data.csv")
+def load_data_recidivism():
+    return pd.read_csv("../datasets/Predictive Modeling/Recidivism_cleaned_data.csv")
+
 
 # Load the model
 @st.cache_resource
-def load_model():
-    saved_model = h2o.import_mojo("models/Recidivism_model/XGBoost_1_AutoML_1_20240321_35815.zip")
+def load_model_recidivism():
+    saved_model = h2o.import_mojo("../models/Recidivism_model/XGBoost_1_AutoML_1_20240321_35815.zip")
+    return saved_model
+
+@st.cache_data
+def load_data_crime_type():
+    return pd.read_csv("../datasets/Predictive Modeling/Crime Type Prediction.csv")
+
+@st.cache_data
+def load_data_hotspot():
+    return pd.read_csv("../datasets/Predictive Modeling/Crime_Hotspot_Cleaned.csv")
+
+# Load the model
+@st.cache_resource
+def load_model_crime_type():
+    saved_model = h2o.import_mojo("../models/Crime_Type_Prediction/XGBoost_1_AutoML_3_20240323_02415.zip")
     return saved_model
 
 def get_unique_values(data, feature):
     return data[feature].unique().tolist()
 
+def get_unique_values_crime_type(data, feature):
+    return data[feature].unique().tolist()
+
+
+
 # Load the saved TargetEncoder
 @st.cache_resource
 def load_target_encoder():
-    with open('models/Recidivism_model/target_encoder.pkl', 'rb') as file:
+    with open('../models/Recidivism_model/target_encoder.pkl', 'rb') as file:
         target_encoder = pickle.load(file)
     return target_encoder
 
@@ -44,17 +72,19 @@ def preprocess_data(data):
 
     # Encoding categorical features using the saved TargetEncoder
     categorical_features = ['Caste', 'Profession', 'PresentCity', 'PresentState']
-    X[categorical_features] = target_encoder.transform(X[categorical_features])
+    data[categorical_features] = target_encoder.transform(data[categorical_features])
 
-    return X
+    return data
 
-def predictive_modeling():
+def predictive_modeling_recidivism():
     st.subheader("Recidivism Prediction App")
+    st.write("Predict whether a previous accused, will again commit a crime or not")
 
+    h2o.init()
     # Load the model
-    model = load_model()
+    model = load_model_recidivism()
 
-    cleaned_data = load_data()
+    cleaned_data = load_data_recidivism()
     # Get unique values for categorical features
     unique_castes = get_unique_values(cleaned_data, 'Caste')
     unique_professions = get_unique_values(cleaned_data, 'Profession')
@@ -82,7 +112,7 @@ def predictive_modeling():
         'Caste': [caste],
         'Profession': [profession],
         'PresentCity': [present_city],
-        'PresentState': [present_state]
+        'PresentState': [present_state],
         'FEMALE': [Female],
         'MALE': [Male]
     })
@@ -94,9 +124,161 @@ def predictive_modeling():
 
     # Make a prediction
     if st.button("Predict"):
-        prediction = model.predict(new_data_processed)
-        if prediction[0] == 0:
+        prediction = model.predict(new_dataframe)
+        if prediction[0, "predict"] == 0:
             st.success("The person is not likely to repeat the crime.")
         else:
             st.warning("The person is likely to repeat the crime.")
+
+
+
+def predictive_modeling_crime_type():
+    st.subheader("Crime Type Prediction App")
+
+    h2o.init()
+
+    # Load the model
+    model = load_model_crime_type()
+
+    cleaned_data_crime_type = load_data_crime_type()
+    # Get unique values for categorical features
+    unique_district = get_unique_values_crime_type(cleaned_data_crime_type, 'District_Name')
+
+
+    # Get user inputs
+    district_name = st.selectbox("Enter District Name:", unique_district)
+    latitude = st.number_input("Enter Latitude:", min_value = 9, max_value = 24)
+    longitude = st.number_input("Enter Longitude:", min_value = 68, max_value = 79)
+    offence_from_year = st.number_input("Offence From Year:", min_value=1927, max_value=2024)
+    offence_from_month = st.number_input("Offence From Month:", min_value=1, max_value=12)
+    offence_from_day = st.number_input("Offence From Day:", min_value=1, max_value=31)
+    offence_to_year = st.number_input("Offence To Year:", min_value=1990, max_value=2024)
+    offence_to_month = st.number_input("Offence To Month:", min_value=1, max_value=12)
+    offence_to_day = st.number_input("Offence To Day:", min_value=1, max_value=31)
+
+
+
+
+    # Create a new data point
+    new_data_crime_type = pd.DataFrame({
+        'District_Name': [district_name],
+        'Latitude': [latitude],
+        'Longitude': [longitude],
+        'Offence_From_Year': [offence_from_year],
+        'Offence_From_Month': [offence_from_month],
+        'Offence_From_Day': [offence_from_day],
+        'Offence_To_Year': [offence_to_year],
+        'Offence_To_Month': [offence_to_month],
+        'Offence_To_Day': [offence_to_day]
+    })
+
+    
+    new_dataframe = h2o.H2OFrame(new_data_crime_type)
+
+    # Make a prediction
+    if st.button("Predict"):
+        prediction = model.predict(new_dataframe)
+        prediction = prediction.as_data_frame()['predict'][0]
+        st.success(f"Predicted crime to be happen most is: {prediction}")
+
+def generate_legend_html(category_to_color):
+    legend_html = '<b>Crime Groups:</b><ul>'
+    for category, color in category_to_color.items():
+        legend_html += f'<li><span style="color:{color};">&#9632;</span> {category}</li>'
+    legend_html += '</ul>'
+    return legend_html
+
+def predictive_modeling_hotspot():
+    hotspot = load_data_hotspot()
+
+    # Encode the 'Crime Group' feature
+    label_encoder = LabelEncoder()
+    hotspot['Crime Group Encoded'] = label_encoder.fit_transform(hotspot['Crime Group'])
+
+    # Create a Folium map
+    m = folium.Map(location=[hotspot['Latitude'].mean(), hotspot['Longitude'].mean()], zoom_start=12)
+
+    # Define a color palette for crime groups
+    crime_colors = {0: '#1f77b4', 1: '#ff7f0e', 2: '#2ca02c', 3: '#d62728', 4: '#9467bd', 5: '#8c564b', 6: '#e377c2', 7: '#7f7f7f', 8: '#bcbd22', 9: '#17becf'}
+
+    # Create a dictionary mapping original category names to their respective colors
+    category_to_color = {}
+    for category, encoded_value in zip(hotspot['Crime Group'].dropna(), hotspot['Crime Group Encoded'].dropna()):
+        category_to_color[category] = crime_colors[encoded_value]
+
+    # Perform DBSCAN clustering with parameter tuning
+    # Define the parameter grid for grid search
+    param_grid = {'eps': [0.01, 0.02, 0.03], 'min_samples': [5, 10, 15]}
+    dbscan = DBSCAN()
+    grid_search = GridSearchCV(dbscan, param_grid=param_grid, scoring=calinski_harabasz_score)
+    grid_search.fit(hotspot[['Latitude', 'Longitude']])
+    dbscan = grid_search.best_estimator_
+    clusters = dbscan.fit_predict(hotspot[['Latitude', 'Longitude']])
+    hotspot['Cluster'] = clusters
+
+    # Add individual markers to the map
+    for i, row in hotspot.iterrows():
+        category_color = category_to_color.get(row['Crime Group'], 'gray')
+        html = f"""
+            <b>Crime Group:</b> {row['Crime Group']}<br>
+            <b>Date:</b> {row['Year']}-{row['Month']}-{row['Day']}
+        """
+        folium.CircleMarker(
+            location=[row['Latitude'], row['Longitude']],
+            radius=5,
+            color=category_color,
+            fill=True,
+            fill_color=category_color,
+            fill_opacity=0.6,
+            popup=folium.Popup(html, max_width=300),
+            tooltip=f"Crime Group: {row['Crime Group']}"
+        ).add_to(m)
+
+    # Add custom cluster markers
+    for cluster_id in hotspot['Cluster'].unique():
+        if cluster_id != -1:  # Ignore noise points
+            cluster_data = hotspot[hotspot['Cluster'] == cluster_id]
+            cluster_center = [cluster_data['Latitude'].mean(), cluster_data['Longitude'].mean()]
+            cluster_crime_groups = cluster_data['Crime Group'].value_counts()
+            top_crime_group = cluster_crime_groups.idxmax()
+            cluster_color = category_to_color.get(top_crime_group, 'gray')
+            html = f"<b>Top Crime Group:</b> {top_crime_group}"
+            folium.CircleMarker(
+                location=cluster_center,
+                radius=10,
+                color=cluster_color,
+                fill=True,
+                fill_color=cluster_color,
+                fill_opacity=0.6,
+                popup=folium.Popup(html, max_width=300),
+                tooltip=f"Top Crime Group: {top_crime_group}"
+            ).add_to(m)
+
+    # Add a heatmap layer
+    heatmap_data = [[row['Latitude'], row['Longitude']] for i, row in hotspot.iterrows()]
+    HeatMap(heatmap_data).add_to(m)
+
+    # Add a fullscreen control
+    Fullscreen().add_to(m)
+
+    # Add a legend
+    # legend_html = '''
+    #     <div style="position: fixed; bottom: 50px; left: 50px; z-index:9999; font-size:14px; background-color: white; padding: 10px;">
+    #         <b>Crime Groups:</b>
+    #         <ul>
+    # '''
+    # for category, color in category_to_color.items():
+    #     legend_html += f'<li><span style="color:{color}"></span> <font color="{color}">{category}</font></li>'
+    # legend_html += '</ul></div>'
+    # m.get_root().html.add_child(folium.Element(legend_html))
+
+    # Display the map
+    folium_static(m)
+
+    st.markdown(generate_legend_html(category_to_color), unsafe_allow_html=True)
+
+
+
+
+
 

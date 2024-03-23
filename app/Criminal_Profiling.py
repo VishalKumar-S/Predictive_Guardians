@@ -19,7 +19,7 @@ import pickle
 
 def create_criminal_profiling_dashboard():
     
-    Criminal_Profiling = pd.read_csv('datasets/Criminal Profiling/Criminal_Profiling.csv')
+    Criminal_Profiling = pd.read_csv('../datasets/Criminal Profiling/Criminal_Profiling.csv')
 
     st.title("Criminal Profiling Dashboard")
 
@@ -59,7 +59,7 @@ def create_criminal_profiling_dashboard():
     
 
     with tabs[0]:
-        fig = px.bar(x=top_crime_groups.index, y=top_crime_groups.values, title="Top 5 Crime Groups Categories", labels={'x': 'Crime Group', 'y': 'Count'})
+        fig = px.bar(x=top_crime_groups.index, y=top_crime_groups.values, title="Top 5 Most Frequent Crime Group Categories", labels={'x': 'Crime Group', 'y': 'Count'})
         st.plotly_chart(fig)
 
     with tabs[1]:
