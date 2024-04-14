@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s', ha
 
 
 def clean_data_crime_pattern_analysis():
-    clean_df= pd.read_csv("datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Raw.csv")
+    clean_df= pd.read_csv("../datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Raw.csv")
 
     #Drop Duplicates
     clean_df = clean_df.drop_duplicates()
@@ -43,7 +43,7 @@ def clean_data_crime_pattern_analysis():
     #Impute Latitude and Longitude values
     # Load  datasets
     crime_pattern_analysis = clean_df.copy()
-    PS_lat_long = pd.read_csv('datasets/Crime Pattern Analysis/Polce_Stations_Lat_Long.csv')
+    PS_lat_long = pd.read_csv('../datasets/Crime Pattern Analysis/Polce_Stations_Lat_Long.csv')
 
     # merge both datasets
     crime_data = pd.merge(crime_pattern_analysis,PS_lat_long, on = "UnitName", suffixes=('_first', '_second'))
@@ -166,7 +166,7 @@ def update_crime_lat_long(new_data):
             print(f"Error: Unable to extract direction and distance for row {index}.")
 
     # Remove reductant features
-``  crime_data = crime_data.drop("Distance from PS", axis = 1)
+    new_data = new_data.drop("Distance from PS", axis = 1)
 
     # Save the new dataset to a new CSV file
     new_data.to_csv("datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv", index=False)
@@ -175,51 +175,4 @@ def update_crime_lat_long(new_data):
 
 
 
-# def sampled_data():
-#   # Read the original dataset
-#   original_dataset = pd.read_csv("datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv")
 
-#   # Get the total number of observations in the original dataset
-#   total_observations = len(original_dataset)
-
-#   # Set the desired overall sample size
-#   desired_sample_size = 10000
-
-#   # Group the dataset by District_Name and UnitName to get the count of observations for each stratum
-#   stratum_counts = original_dataset.groupby(['District_Name', 'UnitName']).size().reset_index(name='count')
-
-#   # Calculate the proportional allocation for each stratum
-#   stratum_counts['proportion'] = stratum_counts['count'] / total_observations
-
-#   # Calculate the sample size for each stratum based on the desired overall sample size
-#   stratum_counts['sample_size'] = (stratum_counts['proportion'] * desired_sample_size).round().astype(int)
-
-#   # Perform stratified sampling for each stratum
-#   for _, row in stratum_counts.iterrows():
-#       district_name = row['District_Name']
-#       unit_name = row['UnitName']
-#       stratum_sample_size = row['sample_size']  # No minimum sample size
-
-#       # Filter the original dataset for the current stratum
-#       stratum_data = original_dataset[(original_dataset['District_Name'] == district_name) & (original_dataset['UnitName'] == unit_name)]
-
-#       # Perform simple random sampling within the stratum
-#       _, sample = train_test_split(stratum_data, train_size=stratum_sample_size, random_state=42)
-
-#       # Append the sampled data to the list
-#       sampled_data.append(sample)
-
-#   # Combine the sampled data into a single dataset
-#   sampled_dataset = pd.concat(sampled_data, ignore_index=True)
-
-#   # Ensure the final sampled dataset has the desired sample size
-#   print(sampled_dataset.shape)
-
-#   # Save the sampled dataset to a new CSV file
-#   sampled_dataset.to_csv('datasets/Crime Pattern Analysis/crime_pattern_analysis_stratified_sampled_dataset.csv', index=False)
-
-
-
-cleaned_data = clean_data_crime_pattern_analysis()
-update_crime_lat_long(cleaned_data)
-#sampled_data()

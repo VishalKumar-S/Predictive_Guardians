@@ -75,19 +75,23 @@ if selected == "Crime Pattern Analysis":
    
     st.subheader("Choropleth Maps")
     chloropleth_maps(crime_pattern_analysis, geojson_data, mean_lat, mean_lon)
-
-    st.subheader("Heat Maps")
-    heatmap_type = st.selectbox("Choose Heatmap Type", ["Spatial Distribution of Crimes", 
-                                                        "Temporal Distribution of Crimes by Year",
-                                                        "Temporal Distribution of Crimes by Month"])
     
-    # Display the selected heat map
-    if heatmap_type == "Spatial Distribution of Crimes":
-        heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'CrimeGroup_Name', 'Spatial Distribution of Crimes')
-    elif heatmap_type == "Temporal Distribution of Crimes by Year":
-        heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'Year', 'Temporal Distribution of Crimes by Year')
-    elif heatmap_type == "Temporal Distribution of Crimes by Month":
-        heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'Month', 'Temporal Distribution of Crimes by Month')
+
+    # st.subheader("Heat Maps")
+
+    # options = ["Spatial Distribution of Crimes", 
+    #         "Temporal Distribution of Crimes by Year",
+    #         "Temporal Distribution of Crimes by Month"]
+    # heatmap_type = st.selectbox("Choose Heatmap Type", options)
+
+    # # Display the selected heat map
+    # if heatmap_type == "Spatial Distribution of Crimes":
+    #     heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'CrimeGroup_Name', 'Spatial Distribution of Crimes')
+    # elif heatmap_type == "Temporal Distribution of Crimes by Year":
+    #     heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'Year', 'Temporal Distribution of Crimes by Year')
+    # elif heatmap_type == "Temporal Distribution of Crimes by Month":
+    #     heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'Month', 'Temporal Distribution of Crimes by Month')
+
 
      
     st.subheader("Cluster Analysis")

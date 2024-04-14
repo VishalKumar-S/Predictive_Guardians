@@ -17,6 +17,9 @@ import pickle
 
 
 def temporal_analysis(crime_pattern_analysis):
+
+
+    
     # Filters
     district_options = ["All Districts"] + sorted(crime_pattern_analysis["District_Name"].unique())
     selected_districts = st.multiselect("Select Districts", district_options, default=[])
@@ -46,7 +49,7 @@ def temporal_analysis(crime_pattern_analysis):
         elif selected_time_granularity == "Month":
             data = filtered_df.groupby(["Month", "District_Name", "CrimeGroup_Name"]).size().reset_index(name="Count")
             fig = px.bar(data, x="Month", y="Count", color="District_Name", barmode="group", hover_data=["CrimeGroup_Name"])
-        else:  # Day
+        elif selected_time_granularity == "Day":
             data = filtered_df.groupby(["Day", "District_Name", "CrimeGroup_Name"]).size().reset_index(name="Count")
             fig = px.bar(data, x="Day", y="Count", color="District_Name", barmode="group", hover_data=["CrimeGroup_Name"])
 
@@ -157,5 +160,4 @@ def chloropleth_maps(df, geojson_data, mean_lat, mean_lon):
                                    title='Choropleth Map: Total Accused Count by District')
 
     # Display the choropleth map
-    st.plotly_chart(fig)
-
+    st.plotly_chart(fig) 

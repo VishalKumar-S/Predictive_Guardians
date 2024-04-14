@@ -1,6 +1,6 @@
 streamlit
 numpy
-pandas
+pandas==1.5.3
 streamlit-option-menu
 folium
 plotly

@@ -29,7 +29,5 @@ def ingest_criminal_profiling():
 
     Criminal_Profiling = Criminal_Profiling.drop_duplicates()
 
-    Criminal_Profiling.to_csv("datasets\Criminal Profiling\Criminal_Profiling_raw.csv")
-    
+    return Criminal_Profiling
 
-ingest_criminal_profiling()
