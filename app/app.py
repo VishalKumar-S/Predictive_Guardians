@@ -17,10 +17,11 @@ import pickle
 from Criminal_Profiling import create_criminal_profiling_dashboard
 from Crime_Pattern_Analysis import *
 from Predictive_modeling import *
-
+from Resource_Allocation import *
 
 with st.sidebar:
-    selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
+    selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Documentation and Resources'],
+    # selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
         icons=['house-fill', 'bar-chart-fill', "fingerprint", 'cpu-fill', 'diagram-3-fill', 'book-fill', 'file-earmark-text-fill' ], 
         menu_icon="shield-shaded", default_index=0, orientation="vertical",
         styles = {
@@ -125,6 +126,22 @@ if selected == "Predictive Modeling":
     elif selected_component == "Crime Hotspot Prediction":
         predictive_modeling_hotspot()
 
+
+if selected == "Resource Allocation and Guidance":
+    df = pd.read_csv("../datasets/Resource Allocation/Resource_Allocation_Cleaned.csv")
+    # st.write(df.head(5))
+    # st.write(df.nunique())
+    # st.write(df.shape)
+    resource_allocation(df)
+
+
+
+if selected == "Documentation and Resources":
+    df = pd.read_csv("../datasets/Resource Allocation/Resource_Allocation_Cleaned.csv")
+    # st.write(df.head(5))
+    # st.write(df.nunique())
+    # st.write(df.shape)
+    resource_allocation(df)
     
 
     

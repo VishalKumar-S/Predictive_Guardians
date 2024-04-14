@@ -17,9 +17,6 @@ import pickle
 
 
 def temporal_analysis(crime_pattern_analysis):
-
-
-    
     # Filters
     district_options = ["All Districts"] + sorted(crime_pattern_analysis["District_Name"].unique())
     selected_districts = st.multiselect("Select Districts", district_options, default=[])
