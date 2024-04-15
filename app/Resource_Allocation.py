@@ -98,9 +98,9 @@ def optimize_police_allocation(optimisation, unit_name, a=0.5, b=2, r1=0.3, r2=0
 
 def display_police_allocation(num_beats, unit_name, asi_sum, chc_sum, cpc_sum, beat_names, village_names, station_names, asi, chc, cpc, crime_severity_weights, no_of_crimes):
     st.subheader(f"Police Resource Allocation for {unit_name}")
-    st.write(f"Total no of ASSISTANT Sub Inspectors in {unit_name} is {asi_sum}")
-    st.write(f"Total no of Head Constables in {unit_name} is {chc_sum}")
-    st.write(f"Total no of Police Constables in {unit_name} is {cpc_sum}")
+    st.write(f"Total no of Assistant Sub Inspectors [ASI] in {unit_name} is {asi_sum}")
+    st.write(f"Total no of Head Constables [CHC] in {unit_name} is {chc_sum}")
+    st.write(f"Total no of Police Constables [CPC] in {unit_name} is {cpc_sum}")
 
 
 

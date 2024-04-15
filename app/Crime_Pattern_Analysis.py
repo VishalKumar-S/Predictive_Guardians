@@ -16,7 +16,15 @@ from streamlit_folium import folium_static
 import pickle
 
 
+
+
 def temporal_analysis(crime_pattern_analysis):
+
+    # Instructions
+    st.write(" ##### Instructions")
+    st.write("1. Select the desired Districts and Crime Groups from the dropdown menus below.")
+    st.write("2. After making your selection, click outside the dropdown menu or press the 'Esc' key to close the dropdown.")
+
     # Filters
     district_options = ["All Districts"] + sorted(crime_pattern_analysis["District_Name"].unique())
     selected_districts = st.multiselect("Select Districts", district_options, default=[])

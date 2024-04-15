@@ -55,7 +55,46 @@ with st.sidebar:
 
 
 if selected == "Home":
-    st.write("Welcome to Predictive Guardians")
+    st.title("Welcome to Predictive Guardians 🚔💻")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown(
+            """
+            Predictive Guardians is an innovative, AI-powered solution that revolutionizes the way law enforcement agencies approach public safety. By utilizing advanced data analysis and machine learning, our platform empowers agencies to make data-driven decisions, enabling them to allocate resources more efficiently and effectively.
+            """
+        )
+        st.markdown(
+            """
+            Through integrating cutting-edge technologies, Predictive Guardians provides law enforcement agencies with the insights and actionable intelligence they need to stay one step ahead of criminals. Our solution covers a comprehensive suite of analytical tools, including:
+            """
+        )
+        st.markdown(
+            """
+            - **Crime Pattern Analysis**: Uncover hidden insights and trends through spatial, temporal, and cluster-based analysis.
+            - **Criminal Profiling**: Develop targeted crime prevention strategies by understanding the characteristics and behavioral patterns of offenders.
+            - **Predictive Modeling**: Forecast future crime trends and patterns, enabling proactive resource allocation and intervention.
+            - **Resource Allocation**: Optimize the deployment of police personnel to ensure efficient and effective utilization of law enforcement resources.
+            """
+        )
+        st.markdown(
+            """
+            Join us on this transformative journey as we redefine the future of public safety and ensure that our communities are safe, secure, and resilient. With Predictive Guardians, the path to a safer tomorrow is within reach.
+            """
+        )
+        if st.button("Learn More"):
+            st.session_state.selected_page = "Documentation and Resources"
+            st.experimental_rerun()
+
+    with col2:
+        data_file_path = os.path.join(root_dir, 'assets', 'Home_Page_image.jpg')
+        st.image(data_file_path, use_column_width=True)
+
+
+if st.session_state.get("selected_page", "Home") == "Documentation and Resources":
+    st.markdown('Click [here](https://github.com/VishalKumar-S/Predictive_Guardians/blob/main/Readme.md) to view the documentation and resources.')
+
 
 if selected == "Crime Pattern Analysis":
 
