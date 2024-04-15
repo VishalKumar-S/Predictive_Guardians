@@ -2,6 +2,7 @@ streamlit
 numpy
 pandas==1.5.3
 streamlit-option-menu
+streamlit-folium
 folium
 plotly
 statsmodels
