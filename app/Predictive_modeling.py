@@ -23,31 +23,41 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import calinski_harabasz_score
+import os
 
+
+# Determine the root directory of the project
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 @st.cache_data
 def load_data_recidivism():
-    return pd.read_csv("../Component_datasets/Recidivism_cleaned_data.csv")
+    # Construct the file path
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Recidivism_cleaned_data.csv')
+    return pd.read_csv(data_file_path)
 
 
 # Load the model
 @st.cache_resource
 def load_model_recidivism():
-    saved_model = h2o.import_mojo("../models/Recidivism_model/XGBoost_1_AutoML_1_20240321_35815.zip")
+    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'XGBoost_1_AutoML_1_20240321_35815.zip')
+    saved_model = h2o.import_mojo(model_file_path)
     return saved_model
 
 @st.cache_data
 def load_data_crime_type():
-    return pd.read_csv("../Component_datasets/Crime Type Prediction.csv")
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime Type Prediction.csv')
+    return pd.read_csv(data_file_path)
 
 @st.cache_data
 def load_data_hotspot():
-    return pd.read_csv("../Component_datasets/Crime_Hotspot_Cleaned.csv")
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Hotspot_Cleaned.csv')
+    return pd.read_csv(data_file_path)
 
 # Load the model
 @st.cache_resource
 def load_model_crime_type():
-    saved_model = h2o.import_mojo("../models/Crime_Type_Prediction/XGBoost_1_AutoML_3_20240323_02415.zip")
+    model_file_path = os.path.join(root_dir, 'models', 'Crime_Type_Prediction', 'XGBoost_1_AutoML_3_20240323_02415.zip')
+    saved_model = h2o.import_mojo(model_file_path)
     return saved_model
 
 def get_unique_values(data, feature):
@@ -61,7 +71,8 @@ def get_unique_values_crime_type(data, feature):
 # Load the saved TargetEncoder
 @st.cache_resource
 def load_target_encoder():
-    with open('../models/Recidivism_model/target_encoder.pkl', 'rb') as file:
+    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'target_encoder.pkl')
+    with open(model_file_path, 'rb') as file:
         target_encoder = pickle.load(file)
     return target_encoder
 
