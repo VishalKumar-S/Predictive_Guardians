@@ -1,5 +1,8 @@
 # Predictive Guardians: Empowering Law Enforcement with AI-Driven Crime Prevention 🚔💻
 
+**Deployed Application: [Predictive Guardians Web App](https://predictive-guardians.streamlit.app/)**
+
+
 # Table of Contents 📜
 1. Introduction 🌟
 2. Crime Pattern Analysis 🔍
@@ -82,7 +85,7 @@ To begin the resource allocation process, users are prompted to select the speci
 ## Resource Allocation 🎯
 At the heart of the Police Resource Allocation component lies a complex optimization model, which takes into account a variety of factors, including the number of available police officers (by rank), the severity and frequency of past crimes, and the unique characteristics of each beat or patrol area. 🧠
 
-All the available police resources data, were taken from here: 
+All the available police resources data were taken from [this source](https://ksp.karnataka.gov.in/page/Administration/K+S+P+Strength/en).
 
 Using advanced mathematical programming techniques, our solution determines the optimal distribution of ASI (Assistant Sub-Inspectors), CHC (Head Constables), and CPC (Police Constables) officers across the specified beats, ensuring that high-risk areas receive the necessary resources and that the overall police force is deployed in a balanced and coordinated manner. 🚨
 
