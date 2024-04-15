@@ -82,6 +82,8 @@ To begin the resource allocation process, users are prompted to select the speci
 ## Resource Allocation 🎯
 At the heart of the Police Resource Allocation component lies a complex optimization model, which takes into account a variety of factors, including the number of available police officers (by rank), the severity and frequency of past crimes, and the unique characteristics of each beat or patrol area. 🧠
 
+All the available police resources data, were taken from here: 
+
 Using advanced mathematical programming techniques, our solution determines the optimal distribution of ASI (Assistant Sub-Inspectors), CHC (Head Constables), and CPC (Police Constables) officers across the specified beats, ensuring that high-risk areas receive the necessary resources and that the overall police force is deployed in a balanced and coordinated manner. 🚨
 
 The output of the optimization process is presented in a clear and intuitive tabular format, allowing law enforcement agencies to visualize the recommended allocation of personnel and understand the rationale behind the decisions. 📊 This transparent approach empowers stakeholders to make informed decisions, promote accountability, and continuously refine the resource allocation strategies based on evolving needs and feedback.
