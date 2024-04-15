@@ -18,6 +18,7 @@ from Criminal_Profiling import create_criminal_profiling_dashboard
 from Crime_Pattern_Analysis import *
 from Predictive_modeling import *
 from Resource_Allocation import *
+import os
 
 with st.sidebar:
     selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Documentation and Resources'],
@@ -128,7 +129,14 @@ if selected == "Predictive Modeling":
 
 
 if selected == "Resource Allocation and Guidance":
-    df = pd.read_csv("../Component_datasets/Resource_Allocation_Cleaned.csv")
+    # Determine the root directory of the project
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    
+    # Construct the file path
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Resource_Allocation_Cleaned.csv')
+    
+    # Read the data
+    df = pd.read_csv(data_file_path)
     resource_allocation(df)
 
 
