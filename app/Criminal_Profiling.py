@@ -15,11 +15,21 @@ import seaborn as sns
 from streamlit_folium import folium_static
 import pickle
 
+# Determine the root directory of the project
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+
+
+# Read the data
+df = pd.read_csv(data_file_path)
 
 
 def create_criminal_profiling_dashboard():
+
+    # Construct the file path
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Criminal_Profiling_cleaned.csv')
     
-    Criminal_Profiling = pd.read_csv('../Component_datasets/Criminal_Profiling_cleaned.csv')
+    Criminal_Profiling = pd.read_csv(data_file_path)
 
     st.title("Criminal Profiling Dashboard")
 
