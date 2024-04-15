@@ -1,9 +1,9 @@
 import pandas as pd
 
 def ingest_criminal_profiling():
-    MOB = pd.read_csv("datasets\MOBsData.csv")
-    rowdy = pd.read_csv("datasets\RowdySheeterDetails.csv")
-    accused = pd.read_csv("datasets\AccusedData.csv")
+    MOB = pd.read_csv("../datasets/MOBsData.csv")
+    rowdy = pd.read_csv("../datasets/RowdySheeterDetails.csv")
+    accused = pd.read_csv("../datasets/AccusedData.csv")
 
     accused = accused[(accused['age'] <= 100) & (accused['age'] >= 7) ]
 
