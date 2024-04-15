@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from streamlit_folium import folium_static
 import pickle
+import os
 
 # Determine the root directory of the project
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
