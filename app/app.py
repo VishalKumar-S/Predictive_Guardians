@@ -138,9 +138,9 @@ if selected == "Resource Allocation and Guidance":
 
 if selected == "Documentation and Resources":
     df = pd.read_csv("../datasets/Resource Allocation/Resource_Allocation_Cleaned.csv")
-    # st.write(df.head(5))
-    # st.write(df.nunique())
-    # st.write(df.shape)
+    st.write(df.head(5))
+    st.write(df.nunique())
+    st.write(df.shape)
     resource_allocation(df)
     
 

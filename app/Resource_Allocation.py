@@ -102,7 +102,21 @@ def display_police_allocation(num_beats, unit_name, asi_sum, chc_sum, cpc_sum, b
     st.write(f"Total no of Head Constables in {unit_name} is {chc_sum}")
     st.write(f"Total no of Police Constables in {unit_name} is {cpc_sum}")
 
-    st.write("Optimal Police Resource Allocation")
+
+
+    st.write(f"""
+    ### Optimal Police Resource Allocation
+    
+    The police resources have been allocated based on the following principles:
+    
+    1. **Prioritizing High-Risk Areas**: The beats with the highest crime severity, as determined by a weighted metric accounting for the number and severity of past crimes, have been allocated more police personnel.
+    
+    2. **Balancing Resource Distribution**: The allocation of ASI, CHC, and CPC officers has been carefully balanced based on the unique strengths and responsibilities of each role, ensuring a comprehensive and coordinated response.
+    
+    The table below shows the optimized distribution of police resources across the different beats within the {unit_name} area.
+    """)
+
+    st.write("**Allocation Details:**")
     data = {
         "Police Station": station_names,
         "Area name": village_names,
@@ -110,7 +124,7 @@ def display_police_allocation(num_beats, unit_name, asi_sum, chc_sum, cpc_sum, b
         "ASI": [int(value.value()) for value in asi],
         "CHC": [int(value.value()) for value in chc],
         "CPC": [int(value.value()) for value in cpc],
-        "Crime Severity of Beat": [crime_severity_weights[i] for i in range(num_beats)],
+        "Crime Severity of Beat": [int(weight) for weight in crime_severity_weights],
         "No of Previous Crimes": [no_of_crimes[i] for i in range(num_beats)]
     }
 
