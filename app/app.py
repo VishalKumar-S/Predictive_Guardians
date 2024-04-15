@@ -20,6 +20,10 @@ from Predictive_modeling import *
 from Resource_Allocation import *
 import os
 
+
+# Determine the root directory of the project
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 with st.sidebar:
     selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Documentation and Resources'],
     # selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
@@ -61,7 +65,10 @@ if selected == "Crime Pattern Analysis":
         url = "https://raw.githubusercontent.com/adarshbiradar/maps-geojson/master/states/karnataka.json"
         response = requests.get(url)
         geojson_data = response.json()
-        crime_pattern_analysis = pd.read_csv("../Component_datasets/Crime_Pattern_Analysis_Cleaned.csv")
+        # Construct the file path
+        data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Pattern_Analysis_Cleaned.csv')
+        # Read the data
+        crime_pattern_analysis = pd.read_csv(data_file_path)
         mean_lat = crime_pattern_analysis['Latitude'].mean()
         mean_lon = crime_pattern_analysis['Longitude'].mean()
         return mean_lat,mean_lon, geojson_data, crime_pattern_analysis
@@ -128,10 +135,7 @@ if selected == "Predictive Modeling":
         predictive_modeling_hotspot()
 
 
-if selected == "Resource Allocation and Guidance":
-    # Determine the root directory of the project
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    
+if selected == "Resource Allocation and Guidance":    
     # Construct the file path
     data_file_path = os.path.join(root_dir, 'Component_datasets', 'Resource_Allocation_Cleaned.csv')
     
