@@ -165,13 +165,16 @@ def update_crime_lat_long(new_data):
         else:
             print(f"Error: Unable to extract direction and distance for row {index}.")
 
-    # Remove reductant features
-    new_data = new_data.drop("Distance from PS", axis = 1)
+    # Remove redundant feature
+    new_data = new_data.drop("Distance from PS", axis=1)
+
 
     # Save the new dataset to a new CSV file
-    new_data.to_csv("datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv", index=False)
+    new_data.to_csv("../datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv", index=False)
 
     logging.info("Dataset is processed and ready with accurate crime co-ordinates now")
+
+    return new_data
 
 
 

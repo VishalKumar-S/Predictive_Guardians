@@ -22,8 +22,7 @@ from Resource_Allocation.clean_data import *
 def crime_pattern_analysis():
     raw_data = ingest_crime_pattern_analysis()
     cleaned_data = clean_data_crime_pattern_analysis()
-    update_crime_lat_long(cleaned_data)
-
+    cleaned_data = update_crime_lat_long(cleaned_data)
 
 
 def Criminal_profiling():
@@ -48,8 +47,8 @@ def resource_allocation():
 
 
 
-#crime_pattern_analysis()
-Criminal_profiling()
+crime_pattern_analysis()
+#Criminal_profiling()
 #predictive_modeling()
 #resource_allocation()
 
