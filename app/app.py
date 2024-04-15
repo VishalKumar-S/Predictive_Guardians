@@ -60,7 +60,7 @@ if selected == "Crime Pattern Analysis":
         url = "https://raw.githubusercontent.com/adarshbiradar/maps-geojson/master/states/karnataka.json"
         response = requests.get(url)
         geojson_data = response.json()
-        crime_pattern_analysis = pd.read_csv("../datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv")
+        crime_pattern_analysis = pd.read_csv("../Component_datasets/Crime_Pattern_Analysis_Cleaned.csv")
         mean_lat = crime_pattern_analysis['Latitude'].mean()
         mean_lon = crime_pattern_analysis['Longitude'].mean()
         return mean_lat,mean_lon, geojson_data, crime_pattern_analysis
@@ -128,20 +128,16 @@ if selected == "Predictive Modeling":
 
 
 if selected == "Resource Allocation and Guidance":
-    df = pd.read_csv("../datasets/Resource Allocation/Resource_Allocation_Cleaned.csv")
-    # st.write(df.head(5))
-    # st.write(df.nunique())
-    # st.write(df.shape)
+    df = pd.read_csv("../Component_datasets/Resource_Allocation_Cleaned.csv")
     resource_allocation(df)
 
 
 
 if selected == "Documentation and Resources":
-    df = pd.read_csv("../datasets/Resource Allocation/Resource_Allocation_Cleaned.csv")
-    st.write(df.head(5))
-    st.write(df.nunique())
-    st.write(df.shape)
-    resource_allocation(df)
+    st.markdown('You selected "Documentation and Resources". Click [here](https://github.com/VishalKumar-S/Predictive_Guardians/blob/main/Readme.md) to view the documentation and resources.')
+
+
+
     
 
     

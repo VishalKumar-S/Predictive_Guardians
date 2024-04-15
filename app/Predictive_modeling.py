@@ -27,7 +27,7 @@ from sklearn.metrics import calinski_harabasz_score
 
 @st.cache_data
 def load_data_recidivism():
-    return pd.read_csv("../datasets/Predictive Modeling/Recidivism_cleaned_data.csv")
+    return pd.read_csv("../Component_datasets/Recidivism_cleaned_data.csv")
 
 
 # Load the model
@@ -38,11 +38,11 @@ def load_model_recidivism():
 
 @st.cache_data
 def load_data_crime_type():
-    return pd.read_csv("../datasets/Predictive Modeling/Crime Type Prediction.csv")
+    return pd.read_csv("../Component_datasets/Crime Type Prediction.csv")
 
 @st.cache_data
 def load_data_hotspot():
-    return pd.read_csv("../datasets/Predictive Modeling/Crime_Hotspot_Cleaned.csv")
+    return pd.read_csv("../Component_datasets/Crime_Hotspot_Cleaned.csv")
 
 # Load the model
 @st.cache_resource

@@ -19,7 +19,7 @@ import pickle
 
 def create_criminal_profiling_dashboard():
     
-    Criminal_Profiling = pd.read_csv('../datasets/Criminal Profiling/Criminal_Profiling.csv')
+    Criminal_Profiling = pd.read_csv('../Component_datasets/Criminal_Profiling_cleaned.csv')
 
     st.title("Criminal Profiling Dashboard")
 
