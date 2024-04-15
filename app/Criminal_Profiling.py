@@ -21,8 +21,6 @@ root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 
-# Read the data
-df = pd.read_csv(data_file_path)
 
 
 def create_criminal_profiling_dashboard():
