@@ -1,10 +1,23 @@
+import os
+import sys
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(project_root)
+
+
 from Crime_Pattern_Analysis.ingest_data import *
 from Crime_Pattern_Analysis.clean_data import *
 from Criminal_Profiling.ingest_data import *
 from Criminal_Profiling.clean_data import *
-from Predictive_Modeling.ingest_data import *
-from Predictive_Modeling.clean_data import *
-from Predictive_Modeling.train_model import *
+from Predictive_Modeling.Crime_Hotspot_Prediction.ingest_data import *
+from Predictive_Modeling.Crime_Hotspot_Prediction.clean_data import *
+from Predictive_Modeling.Recidivism_Prediction.ingest_data import *
+from Predictive_Modeling.Recidivism_Prediction.clean_data import *
+from Predictive_Modeling.Recidivism_Prediction.train_model import *
+from Resource_Allocation.ingest_data import *
+from Resource_Allocation.clean_data import *
+
+
+
 
 def crime_pattern_analysis():
     raw_data = ingest_crime_pattern_analysis()
@@ -25,6 +38,21 @@ def predictive_modeling():
     save_recidivism_explainability_plots(best_model, test)
     raw_data = ingest_hotspot_data()
     clean_hotspot_data(raw_data)
+
+def resource_allocation():
+    raw_data = ingest_resource_data()
+    cleaned_data = clean_resource_data(raw_data)
+    feature_engineering_resources(cleaned_data)
+
+
+
+
+
+crime_pattern_analysis()
+Criminal_profiling()
+predictive_modeling()
+resource_allocation()
+
 
 
 
