@@ -11,78 +11,87 @@ from Continuous_learning_and_feedback.alert import send_alert
 
 
 def update_police_allocation():
-    st.subheader("Police Resource Allocation Updation")
 
-    # Ask user if they want to update the resource allocation
-    update_needed = st.checkbox("Do you want to update the police resource allocation?")
+    with st.expander("**Update Police Resources**",expanded=False):
+        st.subheader("Police Resource Allocation Updation")
 
-    if update_needed:
-        data_file_path = os.path.join(root_dir, 'Component_datasets', 'Resource_Allocation_Cleaned.csv')
-        df = pd.read_csv(data_file_path)
-        # Get the list of units
-        units = df["UNITS"].unique()
+        # Ask user if they want to update the resource allocation
+        update_needed = st.checkbox("Do you want to update the police resource allocation?")
 
-        # Ask user to select the unit they want to update
-        selected_unit = st.selectbox("Select the unit you want to update:", units)
+        if update_needed:
+            data_file_path = os.path.join(root_dir, 'Component_datasets', 'Resource_Allocation_Cleaned.csv')
+            df = pd.read_csv(data_file_path)
+            # Get the list of units
+            units = df["UNITS"].unique()
 
-        # Get the current allocation for the selected unit
-        current_allocation = df[df["UNITS"] == selected_unit]
-        current_asi = current_allocation["ASI"].iloc[0]
-        current_chc = current_allocation["CHC"].iloc[0]
-        current_cpc = current_allocation["CPC"].iloc[0]
+            # Ask user to select the unit they want to update
+            selected_unit = st.selectbox("Select the unit you want to update:", units)
 
-        # Display the current allocation
-        st.markdown(f"**Current Police Resource Allocation for {selected_unit}**")
-        data = {"Unit": [selected_unit], "ASI": [current_asi], "CHC": [current_chc], "CPC": [current_cpc]}
-        existing_df = pd.DataFrame(data)
-        st.table(existing_df)
+            # Get the current allocation for the selected unit
+            current_allocation = df[df["UNITS"] == selected_unit]
+            current_asi = current_allocation["ASI"].iloc[0]
+            current_chc = current_allocation["CHC"].iloc[0]
+            current_cpc = current_allocation["CPC"].iloc[0]
 
-        # Ask user to update the allocation
-        st.subheader("Update Police Resource Allocation")
-        new_asi = st.number_input(f"Enter the new ASI count for {selected_unit}", min_value=int(0.7*current_asi), max_value=int(1.5*current_asi), step=1, value=int(current_asi))
-        new_chc = st.number_input(f"Enter the new CHC count for {selected_unit}", min_value=int(0.7*current_chc), max_value=int(1.5*current_chc), step=1, value=int(current_chc))
-        new_cpc = st.number_input(f"Enter the new CPC count for {selected_unit}", min_value=int(0.7*current_cpc), max_value=int(1.5*current_cpc), step=1, value=int(current_cpc))
+            col1, col2 = st.columns(2)
+            with col1:
+                st.subheader("Current Police Resource Allocation")
+                data = {"Unit": [selected_unit], "ASI": [current_asi], "CHC": [current_chc], "CPC": [current_cpc]}
+                existing_df = pd.DataFrame(data)
+                st.table(existing_df)
 
-        # Confirm the update
-        confirm_update = st.button(f"Confirm Update for {selected_unit}")
+            with col2:
+                st.subheader("Update Police Resource Allocation")
+                new_asi = st.number_input(f"Enter the new ASI count for {selected_unit}", min_value=int(0.7*current_asi), max_value=int(1.5*current_asi), step=1, value=int(current_asi))
+                new_chc = st.number_input(f"Enter the new CHC count for {selected_unit}", min_value=int(0.7*current_chc), max_value=int(1.5*current_chc), step=1, value=int(current_chc))
+                new_cpc = st.number_input(f"Enter the new CPC count for {selected_unit}", min_value=int(0.7*current_cpc), max_value=int(1.5*current_cpc), step=1, value=int(current_cpc))
+                confirm_update = st.button(f"Confirm Update for {selected_unit}")
 
-        if confirm_update:
-            # Update the dataframe with the new values
-            df.loc[df["UNITS"] == selected_unit, "ASI"] = new_asi
-            df.loc[df["UNITS"] == selected_unit, "CHC"] = new_chc
-            df.loc[df["UNITS"] == selected_unit, "CPC"] = new_cpc
 
-            st.success(f"Police resource allocation for {selected_unit} has been updated.")
+
+
+            if confirm_update:
+                # Update the dataframe with the new values
+                df.loc[df["UNITS"] == selected_unit, "ASI"] = new_asi
+                df.loc[df["UNITS"] == selected_unit, "CHC"] = new_chc
+                df.loc[df["UNITS"] == selected_unit, "CPC"] = new_cpc
+
+                st.success(f"Police resource allocation for {selected_unit} has been updated.")
 
 
 
 def display_alert_meter(avg_rating, negative_feedback_count):
-    rating_threshold = 3.5
-    negative_feedback_threshold = 20
+    with st.expander("**Live Feedback Monitoring and Alert Meter**", expanded=False):
+        rating_threshold = 3.5
+        negative_feedback_threshold = 20
 
-    rating_percentage = (avg_rating / rating_threshold) 
-    negative_feedback_percentage = (negative_feedback_count / negative_feedback_threshold) 
+        rating_percentage = (avg_rating / rating_threshold) 
+        negative_feedback_percentage = (negative_feedback_count / negative_feedback_threshold) 
 
-    st.subheader("Alert Meter")
-    col1, col2 = st.columns(2)
+        st.subheader("Alert Meter")
+        col1, col2 = st.columns(2)
 
-    with col1:
-        st.progress(rating_percentage, text=f"Avg. Rating: {avg_rating:.2f}")
-    with col2:
-        st.progress(negative_feedback_percentage, text=f"Negative Feedback: {negative_feedback_count}/{negative_feedback_threshold}")
+        with col1:
+            st.progress(rating_percentage, text=f"Avg. Rating: {avg_rating:.2f}")
+        with col2:
+            st.progress(negative_feedback_percentage, text=f"Negative Feedback: {negative_feedback_count}/{negative_feedback_threshold}")
 
-    if rating_percentage >= 0.0 or negative_feedback_percentage > 0.0:
-        st.warning("The system is approaching the alert threshold. Please review the user feedback.")
-        send_alert(avg_rating, rating_threshold, negative_feedback_count, negative_feedback_threshold)
-    else:
-        st.success("The system is performing well based on the user feedback.")
-    
-    st.markdown("**Note:** When the alert meter bars gets fulled, automatic e-mail alert reports will be sent to the technical lead to resolve the issue")
+        if rating_percentage >= 1.0 or negative_feedback_percentage > 0.9:
+            st.warning("The system is approaching the alert threshold. Please review the user feedback.")
+            send_alert(avg_rating, rating_threshold, negative_feedback_count, negative_feedback_threshold)
+        else:
+            st.success("The system is performing well based on the user feedback.")
+        
+        st.markdown("**Note:** When the alert meter bars gets fulled, automatic e-mail alert reports will be sent to the technical lead to resolve the issue")
 
 def continuous_learning_and_feedback():
     st.title("Continuous Learning and Feedback")
+
+    st.text("Explore all the options below:")
+
     
     update_police_allocation()
+
     data_file_path = os.path.join(root_dir, 'Component_datasets', 'Feedback.csv')
     feedback_data = pd.read_csv(data_file_path)
 
@@ -92,32 +101,32 @@ def continuous_learning_and_feedback():
     display_alert_meter(avg_rating, negative_feedback_count)
 
     # User Feedback Mechanism
-    st.subheader("Provide Feedback")
-    feedback_form = st.form(key="feedback_form")
-    feedback_type = feedback_form.selectbox("Select Feedback Type", ["Crime Pattern Analysis", "Criminal Profiling", "Predictive Modeling", "Resource Allocation"])
-    feedback_rating = feedback_form.slider("Rate the accuracy and usefulness of the system's output", min_value=1, max_value=5, value=3)
-    feedback_comments = feedback_form.text_area("Additional Comments")
-    submit_feedback = feedback_form.form_submit_button("Submit Feedback")
+    with st.expander("**Provide Feedback**", expanded=False):
+        feedback_form = st.form(key="feedback_form")
+        feedback_type = feedback_form.selectbox("Select Feedback Type", ["Crime Pattern Analysis", "Criminal Profiling", "Predictive Modeling", "Resource Allocation"])
+        feedback_rating = feedback_form.slider("Rate the accuracy and usefulness of the system's output", min_value=1, max_value=5, value=3)
+        feedback_comments = feedback_form.text_area("Additional Comments")
+        submit_feedback = feedback_form.form_submit_button("Submit Feedback")
 
-    if submit_feedback:
-        # Collect and store the feedback data
-        feedback_data = {
-            "Feedback Type": feedback_type,
-            "Feedback Rating": feedback_rating,
-            "Feedback Comments": feedback_comments
-        }
-        store_feedback_data(feedback_data)
-        st.success("Thank you for your feedback!")
+        if submit_feedback:
+            # Collect and store the feedback data
+            feedback_data = {
+                "Feedback Type": feedback_type,
+                "Feedback Rating": feedback_rating,
+                "Feedback Comments": feedback_comments
+            }
+            store_feedback_data(feedback_data)
+            st.success("Thank you for your feedback!")
 
     # Knowledge Capture and Documentation
-    st.subheader("Knowledge Base")
-    st.write("Insights and lessons learned from the continuous feedback process are documented here.")
-    display_knowledge_base(feedback_data)
+    with st.expander("**Knowledge Base**", expanded=False):   
+        st.write("Insights and lessons learned from the continuous feedback process are documented here.")
+        display_knowledge_base(feedback_data)
 
     # Collaborative Learning
-    st.subheader("Feedback Sessions")
-    st.write("Periodic feedback sessions are organized with domain experts and stakeholders.")
-    organize_feedback_sessions()
+    with st.expander("**Feedback Sessions Invitation**", expanded=False):
+        organize_feedback_sessions()
+
 
     # Transparency and Explainability
     #st.subheader("Model Explanations")
@@ -169,7 +178,7 @@ def organize_feedback_sessions():
 
     st.markdown("**Note**: After selecting the stakeholders for invitation, click outside the dropdown menu or press the 'Esc' key to close the dropdown.")
     # Send feedback session invitation
-    if st.button("Send Feedback Session Invitation"):
+    if st.button("Send Invitation mail"):
         # Initialize an empty list to collect email addresses
         email_addresses = []
 
