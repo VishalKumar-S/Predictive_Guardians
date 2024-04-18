@@ -18,6 +18,7 @@ from Criminal_Profiling import create_criminal_profiling_dashboard
 from Crime_Pattern_Analysis import *
 from Predictive_modeling import *
 from Resource_Allocation import *
+from Continuous_Learning_and_Feedback import *
 import os
 
 
@@ -25,8 +26,7 @@ import os
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 with st.sidebar:
-    selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Documentation and Resources'],
-    # selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
+    selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
         icons=['house-fill', 'bar-chart-fill', "fingerprint", 'cpu-fill', 'diagram-3-fill', 'book-fill', 'file-earmark-text-fill' ], 
         menu_icon="shield-shaded", default_index=0, orientation="vertical",
         styles = {
@@ -182,7 +182,8 @@ if selected == "Resource Allocation and Guidance":
     df = pd.read_csv(data_file_path)
     resource_allocation(df)
 
-
+if selected == "Continuous Learning and Feedback":
+    continuous_learning_and_feedback()
 
 if selected == "Documentation and Resources":
     st.markdown('You selected "Documentation and Resources". Click [here](https://github.com/VishalKumar-S/Predictive_Guardians/blob/main/Readme.md) to view the documentation and resources.')
