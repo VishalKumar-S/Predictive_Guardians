@@ -76,7 +76,7 @@ def display_alert_meter(avg_rating, negative_feedback_count):
         with col2:
             st.progress(negative_feedback_percentage, text=f"Negative Feedback: {negative_feedback_count}/{negative_feedback_threshold}")
 
-        if rating_percentage >= 1.0 or negative_feedback_percentage > 0.9:
+        if rating_percentage >= 1.0 or negative_feedback_percentage >= 0.9:
             st.warning("The system is approaching the alert threshold. Please review the user feedback.")
             send_alert(avg_rating, rating_threshold, negative_feedback_count, negative_feedback_threshold)
         else:
