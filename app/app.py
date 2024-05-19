@@ -76,6 +76,7 @@ if selected == "Home":
             - **Criminal Profiling**: Develop targeted crime prevention strategies by understanding the characteristics and behavioral patterns of offenders.
             - **Predictive Modeling**: Forecast future crime trends and patterns, enabling proactive resource allocation and intervention.
             - **Resource Allocation**: Optimize the deployment of police personnel to ensure efficient and effective utilization of law enforcement resources.
+            - **Continuous Learning and Feedback**: Facilitate ongoing system improvement by incorporating user feedbacks, alerts, organizing collaborative learning sessions, and maintaining a knowledge base to document insights and lessons learned.
             """
         )
         st.markdown(
