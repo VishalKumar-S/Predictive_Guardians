@@ -34,9 +34,8 @@ def predictive_modeling():
     raw_data = ingest_recidivism_data()
     cleaned_data = clean_recividism_model(raw_data) 
     best_model, test = train_recidivism_model(cleaned_data)
-    save_recidivism_explainability_plots(best_model, test)
-    #raw_data = ingest_hotspot_data()
-    #clean_hotspot_data(raw_data)
+    raw_data = ingest_hotspot_data()
+    clean_hotspot_data(raw_data)
 
 def resource_allocation():
     raw_data = ingest_resource_data()
@@ -47,10 +46,10 @@ def resource_allocation():
 
 
 
-#crime_pattern_analysis()
-#Criminal_profiling()
+crime_pattern_analysis()
+Criminal_profiling()
 predictive_modeling()
-#resource_allocation()
+resource_allocation()
 
 
 
