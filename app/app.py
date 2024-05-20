@@ -151,6 +151,10 @@ if selected == "Crime Pattern Analysis":
 
     # Reset the index of the sampled data
     sampled_data = sampled_data.reset_index(drop=True)
+    sampled_data = sampled_data[~((sampled_data["Latitude"] > 19) |
+                               (sampled_data["Longitude"] > 78) |
+                               (sampled_data["Latitude"] < 11) |
+                               (sampled_data["Longitude"] < 74))]
     mean_lat_sampled = sampled_data['Latitude'].mean()
     mean_lon_sampled = sampled_data['Longitude'].mean()
         
