@@ -10,7 +10,7 @@ def clean_Criminal_Profiling(Criminal_Profiling):
        'Caste', 'Sex']]
 
 
-    Criminal_Profiling.to_csv("../datasets/Criminal Profiling/Criminal_Profiling_cleaned.csv")
+    Criminal_Profiling.to_csv("../Component_datasets/Criminal_Profiling_cleaned.csv")
 
 
 

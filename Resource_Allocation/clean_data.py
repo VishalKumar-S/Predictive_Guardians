@@ -284,7 +284,7 @@ def feature_engineering_resources(clean_data):
     optimisation.drop_duplicates(inplace = True)
 
     # Save the new dataset to a new CSV file
-    optimisation.to_csv("../datasets/Resource Allocation/Resource_Allocation_Cleaned.csv", index = False)
+    optimisation.to_csv("../Component_datasets/Resource_Allocation_Cleaned.csv", index = False)
 
 
 
