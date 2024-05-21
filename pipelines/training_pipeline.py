@@ -33,7 +33,7 @@ def Criminal_profiling():
 def predictive_modeling():
     raw_data = ingest_recidivism_data()
     cleaned_data = clean_recividism_model(raw_data) 
-    best_model, test = train_recidivism_model(cleaned_data)
+    train_recidivism_model(cleaned_data)
     raw_data = ingest_hotspot_data()
     clean_hotspot_data(raw_data)
 
