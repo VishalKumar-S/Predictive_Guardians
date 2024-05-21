@@ -170,7 +170,7 @@ def update_crime_lat_long(new_data):
 
 
     # Save the new dataset to a new CSV file
-    new_data.to_csv("../datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Cleaned.csv", index=False)
+    new_data.to_csv("../Component_datasets/Crime_Pattern_Analysis_Cleaned.csv", index=False)
 
     logging.info("Dataset is processed and ready with accurate crime co-ordinates now")
 
