@@ -47,9 +47,9 @@ def resource_allocation():
 
 
 crime_pattern_analysis()
-Criminal_profiling()
-predictive_modeling()
-resource_allocation()
+# Criminal_profiling()
+# predictive_modeling()
+# resource_allocation()
 
 
 
