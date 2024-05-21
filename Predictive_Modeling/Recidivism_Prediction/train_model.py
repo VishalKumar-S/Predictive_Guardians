@@ -22,7 +22,7 @@ def train_recidivism_model(cleaned_data):
     x.remove(y)
 
     # Run the AutoML process
-    aml = H2OAutoML(seed=42, max_runtime_secs = 30)
+    aml = H2OAutoML(seed=42, max_runtime_secs = 400)
     aml.train(x=x, y=y, training_frame=train)
 
     # Get the leaderboard of models

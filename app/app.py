@@ -168,10 +168,10 @@ if selected == "Criminal Profiling":
 
 
 if selected == "Predictive Modeling":
-    selected_component = st.radio("Select Prediction Component", ["Recidivism Prediction", "Crime Type Prediction", "Crime Hotspot Prediction"])
+    selected_component = st.radio("Select Prediction Component", ["Repeat Offense Prediction", "Crime Type Prediction", "Crime Hotspot Prediction"])
 
     # Display the selected component
-    if selected_component == "Recidivism Prediction":
+    if selected_component == "Repeat Offense Prediction":
         predictive_modeling_recidivism()
     elif selected_component == "Crime Type Prediction":
         predictive_modeling_crime_type()
