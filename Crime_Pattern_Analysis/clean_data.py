@@ -168,6 +168,12 @@ def update_crime_lat_long(new_data):
     # Remove redundant feature
     new_data = new_data.drop("Distance from PS", axis=1)
 
+    # Remove outlier co-ordinates
+    
+    new_data = new_data[~((new_data["Latitude"] > 19) |
+                            (new_data["Longitude"] > 78) |
+                            (new_data["Latitude"] < 11) |
+                            (new_data["Longitude"] < 74))]
 
     # Save the new dataset to a new CSV file
     new_data.to_csv("../Component_datasets/Crime_Pattern_Analysis_Cleaned.csv", index=False)
