@@ -71,7 +71,7 @@ def get_unique_values_crime_type(data, feature):
 
 
 def predictive_modeling_recidivism():
-    st.subheader("Recidivism Prediction App")
+    st.subheader("Repeat Offense Prediction App")
     st.write("Predict whether a previous accused, will again commit a crime or not")
 
     h2o.init()
@@ -125,9 +125,9 @@ def predictive_modeling_recidivism():
         pred = predictions_df.loc[0, "predict"]
         # Use the prediction
         if pred == 0:
-            st.success("The person is not likely to repeat the crime.")
+            st.success("🔵 The person is not likely to repeat the crime.")
         else:
-            st.warning("The person is likely to repeat the crime.")
+            st.warning("🔴 The person is likely to repeat the crime.")
 
 
 
