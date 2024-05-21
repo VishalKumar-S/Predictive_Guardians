@@ -32,14 +32,14 @@ root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 @st.cache_data
 def load_data_recidivism():
     # Construct the file path
-    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Recidivism_cleaned_data.csv')
+    data_file_path = os.path.join(root_dir, 'datasets', 'Predictive Modeling', 'Recidivism_cleaned_data.csv')
     return pd.read_csv(data_file_path)
 
 
 # Load the model
 @st.cache_resource
 def load_model_recidivism():
-    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'XGBoost_1_AutoML_1_20240321_35815.zip')
+    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'StackedEnsemble_BestOfFamily_2_AutoML_1_20240520_155823.zip')
     saved_model = h2o.import_mojo(model_file_path)
     return saved_model
 
@@ -68,24 +68,7 @@ def get_unique_values_crime_type(data, feature):
 
 
 
-# Load the saved TargetEncoder
-@st.cache_resource
-def load_target_encoder():
-    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'target_encoder.pkl')
-    with open(model_file_path, 'rb') as file:
-        target_encoder = pickle.load(file)
-    return target_encoder
 
-# Function to preprocess new data
-def preprocess_data(data):
-    # Load the saved TargetEncoder
-    target_encoder = load_target_encoder()
-
-    # Encoding categorical features using the saved TargetEncoder
-    categorical_features = ['Caste', 'Profession', 'PresentCity', 'PresentState']
-    data[categorical_features] = target_encoder.transform(data[categorical_features])
-
-    return data
 
 def predictive_modeling_recidivism():
     st.subheader("Recidivism Prediction App")
@@ -100,43 +83,48 @@ def predictive_modeling_recidivism():
     unique_castes = get_unique_values(cleaned_data, 'Caste')
     unique_professions = get_unique_values(cleaned_data, 'Profession')
     unique_cities = get_unique_values(cleaned_data, 'PresentCity')
+    unique_districts = get_unique_values(cleaned_data, 'District_Name')
     unique_states = get_unique_values(cleaned_data, 'PresentState')
 
     # Get user inputs
     age = st.number_input("Age", min_value=7, max_value=100)
     caste = st.selectbox("Caste", unique_castes)
     profession = st.selectbox("Profession", unique_professions)
-    sex = st.selectbox("Sex", ["Male", "Female"])
-    if sex == "Male":
-        Male = 1
-        Female = 0
-    if sex == "Female":
-        Male = 0
-        Female = 1
-
-    present_city = st.selectbox("Present City", unique_cities)
+    sex = st.selectbox("Sex", ["MALE", "FEMALE", "Enuch"])
+    present_district = st.selectbox("Crime District", unique_districts)
     present_state = st.selectbox("Present State", unique_states)
+    present_city = st.selectbox("Present City", unique_cities)
+
 
     # Create a new data point
     new_data = pd.DataFrame({
+        'District_Name': [present_district],
         'age': [age],
         'Caste': [caste],
         'Profession': [profession],
+        'Sex': [sex],
         'PresentCity': [present_city],
         'PresentState': [present_state],
-        'FEMALE': [Female],
-        'MALE': [Male]
     })
 
-    # Preprocess the new data
-    new_data_processed = preprocess_data(new_data)
 
-    new_dataframe = h2o.H2OFrame(new_data_processed)
+    new_dataframe = h2o.H2OFrame(new_data)
+
+
 
     # Make a prediction
     if st.button("Predict"):
-        prediction = model.predict(new_dataframe)
-        if prediction[0, "predict"] == 0:
+        
+        # Make predictions
+        predictions = model.predict(new_dataframe)
+
+        # Convert H2OFrame to pandas DataFrame
+        predictions_df = predictions.as_data_frame()
+
+        # Extract the prediction
+        pred = predictions_df.loc[0, "predict"]
+        # Use the prediction
+        if pred == 0:
             st.success("The person is not likely to repeat the crime.")
         else:
             st.warning("The person is likely to repeat the crime.")

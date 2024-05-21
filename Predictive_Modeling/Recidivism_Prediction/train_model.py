@@ -5,15 +5,11 @@ from sklearn.model_selection import train_test_split
 
 
 
-def train_recidivism_model(train, test):
-
+def train_recidivism_model(cleaned_data):
 
     h2o.init()
-
-    # Convert the train and test DataFrames to H2O frames
-    train = h2o.H2OFrame(train)
-    test = h2o.H2OFrame(test)
-
+    dataset = h2o.H2OFrame(cleaned_data)
+    train, test = dataset.split_frame(ratios=[0.7])
 
     # Convert the 'Recidivism' column to categorical
     train['Recidivism'] = train['Recidivism'].asfactor()
@@ -26,7 +22,7 @@ def train_recidivism_model(train, test):
     x.remove(y)
 
     # Run the AutoML process
-    aml = H2OAutoML(max_models=15, seed=42, max_runtime_secs = 300)
+    aml = H2OAutoML(seed=42, max_runtime_secs = 30)
     aml.train(x=x, y=y, training_frame=train)
 
     # Get the leaderboard of models
@@ -39,29 +35,32 @@ def train_recidivism_model(train, test):
     model_type = best_model.model_id
     print(model_type)
 
-    best_model.download_mojo("models/Recidivism_model", get_genmodel_jar=True)
+    best_model.download_mojo("../models/Recidivism_model", get_genmodel_jar=True)
 
     # Evaluate the best model on the test set
     performance = best_model.model_performance(test)
     print(performance)
 
-    return best_model, test
+    # Make predictions on the test set
+    predictions = best_model.predict(test)
 
 
 
 
-def save_recidivism_explainability_plots(model, data):
-    obj = model.explain(data, render=False)
-    for key in obj.keys():
-        print(f"saving {key} plots")
-        if not obj.get(key).get("plots"):
-            continue
-        plots = obj.get(key).get("plots").keys()
 
-        os.makedirs(f"./images/{key}", exist_ok=True)
-        for plot in plots:
-            fig = obj.get(key).get("plots").get(plot).figure()
-            fig.savefig(f"./images/{key}/{plot}.png")
+
+# def save_recidivism_explainability_plots(model, data):
+#     obj = model.explain(data, render=False)
+#     for key in obj.keys():
+#         print(f"saving {key} plots")
+#         if not obj.get(key).get("plots"):
+#             continue
+#         plots = obj.get(key).get("plots").keys()
+
+#         os.makedirs(f"./images/{key}", exist_ok=True)
+#         for plot in plots:
+#             fig = obj.get(key).get("plots").get(plot).figure()
+#             fig.savefig(f"./images/{key}/{plot}.png")
 
 
 
