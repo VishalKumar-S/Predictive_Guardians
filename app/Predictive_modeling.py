@@ -32,7 +32,7 @@ root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 @st.cache_data
 def load_data_recidivism():
     # Construct the file path
-    data_file_path = os.path.join(root_dir, 'datasets', 'Predictive Modeling', 'Recidivism_cleaned_data.csv')
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Recidivism_cleaned_data.csv')
     return pd.read_csv(data_file_path)
 
 
@@ -45,7 +45,7 @@ def load_model_recidivism():
 
 @st.cache_data
 def load_data_crime_type():
-    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime Type Prediction.csv')
+    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Type_cleaned_data.csv')
     return pd.read_csv(data_file_path)
 
 @st.cache_data
@@ -56,7 +56,7 @@ def load_data_hotspot():
 # Load the model
 @st.cache_resource
 def load_model_crime_type():
-    model_file_path = os.path.join(root_dir, 'models', 'Crime_Type_Prediction', 'XGBoost_1_AutoML_3_20240323_02415.zip')
+    model_file_path = os.path.join(root_dir, 'models', 'Crime_Type_Prediction', 'GBM_1_AutoML_2_20240521_83242.zip')
     saved_model = h2o.import_mojo(model_file_path)
     return saved_model
 
@@ -146,14 +146,12 @@ def predictive_modeling_crime_type():
 
     # Get user inputs
     district_name = st.selectbox("Enter District Name:", unique_district)
-    latitude = st.number_input("Enter Latitude:", min_value = 9, max_value = 24)
-    longitude = st.number_input("Enter Longitude:", min_value = 68, max_value = 79)
-    offence_from_year = st.number_input("Offence From Year:", min_value=1927, max_value=2024)
-    offence_from_month = st.number_input("Offence From Month:", min_value=1, max_value=12)
     offence_from_day = st.number_input("Offence From Day:", min_value=1, max_value=31)
-    offence_to_year = st.number_input("Offence To Year:", min_value=1990, max_value=2024)
-    offence_to_month = st.number_input("Offence To Month:", min_value=1, max_value=12)
+    offence_from_month = st.number_input("Offence From Month:", min_value=1, max_value=12)
+    offence_from_year = st.number_input("Offence From Year:", min_value=1927, max_value=2024)
     offence_to_day = st.number_input("Offence To Day:", min_value=1, max_value=31)
+    offence_to_month = st.number_input("Offence To Month:", min_value=1, max_value=12)
+    offence_to_year = st.number_input("Offence To Year:", min_value=1990, max_value=2024)
 
 
 
@@ -161,8 +159,6 @@ def predictive_modeling_crime_type():
     # Create a new data point
     new_data_crime_type = pd.DataFrame({
         'District_Name': [district_name],
-        'Latitude': [latitude],
-        'Longitude': [longitude],
         'Offence_From_Year': [offence_from_year],
         'Offence_From_Month': [offence_from_month],
         'Offence_From_Day': [offence_from_day],
