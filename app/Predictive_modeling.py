@@ -24,6 +24,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import calinski_harabasz_score
 import os
+import joblib
+import json
+
 
 
 # Determine the root directory of the project
@@ -39,7 +42,7 @@ def load_data_recidivism():
 # Load the model
 @st.cache_resource
 def load_model_recidivism():
-    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'StackedEnsemble_BestOfFamily_2_AutoML_1_20240520_155823.zip')
+    model_file_path = os.path.join(root_dir, 'models', 'Recidivism_model', 'StackedEnsemble_BestOfFamily_2_AutoML_1_20240719_183320.zip')
     saved_model = h2o.import_mojo(model_file_path)
     return saved_model
 
@@ -78,22 +81,30 @@ def predictive_modeling_recidivism():
     # Load the model
     model = load_model_recidivism()
 
+    scaler = joblib.load('../models/Recidivism_model/scaler.pkl')
+
     cleaned_data = load_data_recidivism()
     # Get unique values for categorical features
     unique_castes = get_unique_values(cleaned_data, 'Caste')
     unique_professions = get_unique_values(cleaned_data, 'Profession')
-    unique_cities = get_unique_values(cleaned_data, 'PresentCity')
     unique_districts = get_unique_values(cleaned_data, 'District_Name')
-    unique_states = get_unique_values(cleaned_data, 'PresentState')
+    unique_cities = get_unique_values(cleaned_data, 'PresentCity')
+
 
     # Get user inputs
     age = st.number_input("Age", min_value=7, max_value=100)
     caste = st.selectbox("Caste", unique_castes)
     profession = st.selectbox("Profession", unique_professions)
-    sex = st.selectbox("Sex", ["MALE", "FEMALE", "Enuch"])
     present_district = st.selectbox("Crime District", unique_districts)
-    present_state = st.selectbox("Present State", unique_states)
-    present_city = st.selectbox("Present City", unique_cities)
+    present_city = st.selectbox("Criminal Present City", unique_cities)
+
+    # Perform Encoding
+    f = open("../models/Recidivism_model/frequency_encoding.json")
+    frequency = json.load(f)
+    caste = frequency["Caste"][caste]
+    profession = frequency["Profession"][profession]
+    present_district = frequency["District_Name"][present_district]
+    present_city = frequency["PresentCity"][present_city]
 
 
     # Create a new data point
@@ -102,14 +113,15 @@ def predictive_modeling_recidivism():
         'age': [age],
         'Caste': [caste],
         'Profession': [profession],
-        'Sex': [sex],
         'PresentCity': [present_city],
-        'PresentState': [present_state],
     })
 
+    # Perform Standardisation
+    new_data_scaled = scaler.transform(new_data)
 
-    new_dataframe = h2o.H2OFrame(new_data)
+    new_df = pd.DataFrame(new_data_scaled, columns = new_data.columns, index = new_data.index)
 
+    new_dataframe = h2o.H2OFrame(new_df)
 
 
     # Make a prediction
