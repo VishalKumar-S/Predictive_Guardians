@@ -19,7 +19,7 @@ def ingest_recidivism_data():
    acused.drop(columns = [ 'UnitName', 'FIRNo', 'Year', 'Month', 'AccusedName',
        'Person_Name','PresentAddress','PermanentAddress', 'PermanentCity',
        'PermanentState', 'Nationality_Name', 'DOB', 'Person_No', 'Arr_ID',
-       'crime_no'], inplace = True)
+       'crime_no','PresentState','Sex'], inplace = True)
       
    acused.drop_duplicates(inplace = True)
 
