@@ -18,6 +18,8 @@ def train_recidivism_model(cleaned_data):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
+    joblib.dump(scaler, 'models/Recidivism_model/scaler.pkl')
+
     X_test_scaled = scaler.transform(X_test)
 
     X_train_scaled_df = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
