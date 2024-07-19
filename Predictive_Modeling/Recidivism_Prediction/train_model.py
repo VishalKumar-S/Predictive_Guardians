@@ -2,14 +2,31 @@ import h2o
 from h2o.automl import H2OAutoML
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+
 
 
 
 def train_recidivism_model(cleaned_data):
 
+    #Perform Standardisation
+    X = cleaned_data.drop('Recidivism', axis=1)
+    y = cleaned_data['Recidivism']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    X_train_scaled_df = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
+    X_test_scaled_df = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)
+
+
     h2o.init()
-    dataset = h2o.H2OFrame(cleaned_data)
-    train, test = dataset.split_frame(ratios=[0.7])
+    train = h2o.H2OFrame(X_train_scaled_df.join(y_train))
+    test = h2o.H2OFrame(X_test_scaled_df.join(y_test))
 
     # Convert the 'Recidivism' column to categorical
     train['Recidivism'] = train['Recidivism'].asfactor()
@@ -22,7 +39,7 @@ def train_recidivism_model(cleaned_data):
     x.remove(y)
 
     # Run the AutoML process
-    aml = H2OAutoML(seed=42, max_runtime_secs = 400)
+    aml = H2OAutoML(seed=42, max_runtime_secs = 900)
     aml.train(x=x, y=y, training_frame=train)
 
     # Get the leaderboard of models
