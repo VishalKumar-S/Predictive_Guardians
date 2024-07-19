@@ -2,6 +2,9 @@ import pandas as pd
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
 import random
+import os
+import json
+import joblib
 
 def clean_recividism_model(acused):
     #SMOTE
@@ -37,30 +40,6 @@ def clean_recividism_model(acused):
 
     # Combine the oversampled and undersampled data
     balanced_data = pd.concat([oversampled_data, undersampled_data])
-
-
-    # Reduce High Cardinality in Categorical Variables
-
-    categorical_columns = balanced_data.select_dtypes(include=['object']).columns  # Get all categorical columns
-    threshold_percentage=1
-    
-    for column in categorical_columns:
-        value_counts = balanced_data[column].value_counts(normalize=True) * 100
-        # Replace categories below the threshold with 'Other'
-        balanced_data[column] = balanced_data[column].apply(lambda x: x if value_counts.get(x, 0) >= threshold_percentage else 'Other')
-
-    
-    # Frequency/ Count Encoding
-    categorical_columns = ['District_Name', 'Caste', 'Profession', 'Sex', 'PresentCity', 'PresentState']
-
-    value_count_dict = {}
-    for col in categorical_columns:
-        value = balanced_data[col].value_counts()
-        value_count_dict[col] = value
-        balanced_data[col] = balanced_data[col].map(value)
-
-    with open('models/Recidivism_model/frequency_encoding.json', 'w') as f:
-        json.dump(value_count_dict, f)
 
     
     balanced_data.to_csv("../Component_datasets/Recidivism_cleaned_data.csv")
