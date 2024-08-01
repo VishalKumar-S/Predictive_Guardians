@@ -49,7 +49,6 @@ def predictive_modeling():
 def resource_allocation():
     raw_data = ingest_resource_data()
     cleaned_data = clean_resource_data(raw_data)
-    feature_engineering_resources(cleaned_data)
 
 
 
