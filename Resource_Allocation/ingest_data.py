@@ -3,8 +3,13 @@ import pandas as pd
 
 def ingest_resource_data():
     df = pd.read_csv("../datasets/FIR_Details_Data.csv")
-    resource_relevant = df[['District_Name', 'UnitName', 'Village_Area_Name',  'CrimeGroup_Name', 'Beat_Name']]
 
-    resource_relevant.drop_duplicates(inplace =  True)
+    df.drop(columns= df.columns[~df.columns.isin(['District_Name', 'UnitName', 'FIRNo', 'CrimeGroup_Name',
+            'Beat_Name', 'Village_Area_Name', 'Accused Count',
+        'Arrested Count\tNo.',
+        'Accused_ChargeSheeted Count',
+        ])],inplace = True)
 
-    return resource_relevant
+    df.drop_duplicates(inplace =  True)
+
+    return df
