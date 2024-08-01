@@ -279,6 +279,15 @@ def clean_resource_data(df):
                       'Sanctioned Strength of Police Constables per District']
 
     df[columns_to_convert] = df[columns_to_convert].apply(np.round).astype(int)
+    
+    # Calculate the sum of 'Crime Severity per Beat' for each district
+    district_crime_severity_sum = df.groupby("District Name")["Crime Severity per Beat"].sum()
+
+    # Calculate 'Normalised Crime Severity' by dividing 'Crime Severity per Beat' by the sum for each district
+    df["Normalised Crime Severity"] = df.apply(lambda row: row["Crime Severity per Beat"] / district_crime_severity_sum[row["District Name"]], axis=1)
+
+    df.drop(columns = ["Crime Severity per Beat"], inplace = True)
+
 
     # Save the new dataset to a new CSV file
     df.to_csv("../Component_datasets/Resource_Allocation_Cleaned.csv", index = False)
