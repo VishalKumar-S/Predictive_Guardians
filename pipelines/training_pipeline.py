@@ -2,8 +2,6 @@ import os
 import sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_root)
-
-
 from Crime_Pattern_Analysis.ingest_data import *
 from Crime_Pattern_Analysis.clean_data import *
 from Criminal_Profiling.ingest_data import *
@@ -54,9 +52,9 @@ def resource_allocation():
 
 
 
-crime_pattern_analysis()
-Criminal_profiling()
-predictive_modeling()
+# crime_pattern_analysis()
+# Criminal_profiling()
+# predictive_modeling()
 resource_allocation()
 
 

@@ -2,20 +2,13 @@ import h2o
 from h2o.automl import H2OAutoML
 import pandas as pd
 from sklearn.model_selection import train_test_split
-<<<<<<< HEAD
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
-
-=======
-<<<<<<< Updated upstream
->>>>>>> a289a7d (Add updated model and data files)
-
-
+import joblib
+import os
 
 def train_recidivism_model(cleaned_data):
 
-    #Perform Standardisation
+    # Perform Standardization
     X = cleaned_data.drop('Recidivism', axis=1)
     y = cleaned_data['Recidivism']
 
@@ -29,35 +22,13 @@ def train_recidivism_model(cleaned_data):
     X_train_scaled_df = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
     X_test_scaled_df = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)
 
-
     h2o.init()
-<<<<<<< HEAD
     train = h2o.H2OFrame(X_train_scaled_df.join(y_train))
     test = h2o.H2OFrame(X_test_scaled_df.join(y_test))
-=======
-    dataset = h2o.H2OFrame(cleaned_data)
-    train, test = dataset.split_frame(ratios=[0.7])
-=======
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-import joblib
-import os
-
-
-
-
-def train_recidivism_model(X_train, X_test, y_train, y_test):
-
-    h2o.init()
-    train = h2o.H2OFrame(X_train.join(y_train))
-    test = h2o.H2OFrame(X_test.join(y_test))
->>>>>>> Stashed changes
->>>>>>> a289a7d (Add updated model and data files)
 
     # Convert the 'Recidivism' column to categorical
     train['Recidivism'] = train['Recidivism'].asfactor()
     test['Recidivism'] = test['Recidivism'].asfactor()
-
 
     # Specify the target variable and input features
     y = "Recidivism"
@@ -65,15 +36,7 @@ def train_recidivism_model(X_train, X_test, y_train, y_test):
     x.remove(y)
 
     # Run the AutoML process
-<<<<<<< HEAD
-    aml = H2OAutoML(seed=42, max_runtime_secs = 900)
-=======
-<<<<<<< Updated upstream
-    aml = H2OAutoML(seed=42, max_runtime_secs = 400)
-=======
-    aml = H2OAutoML(seed=42, max_runtime_secs = 90)
->>>>>>> Stashed changes
->>>>>>> a289a7d (Add updated model and data files)
+    aml = H2OAutoML(seed=42, max_runtime_secs=900)
     aml.train(x=x, y=y, training_frame=train)
 
     # Get the leaderboard of models
@@ -95,24 +58,15 @@ def train_recidivism_model(X_train, X_test, y_train, y_test):
     # Make predictions on the test set
     predictions = best_model.predict(test)
 
+# def save_recidivism_explainability_plots(model, data):
+#     obj = model.explain(data, render=False)
+#     for key in obj.keys():
+#         print(f"saving {key} plots")
+#         if not obj.get(key).get("plots"):
+#             continue
+#         plots = obj.get(key).get("plots").keys()
 
-
-
-
-
-def save_recidivism_explainability_plots(model, data):
-    obj = model.explain(data, render=False)
-    for key in obj.keys():
-        print(f"saving {key} plots")
-        if not obj.get(key).get("plots"):
-            continue
-        plots = obj.get(key).get("plots").keys()
-
-        os.makedirs(f"./images/{key}", exist_ok=True)
-        for plot in plots:
-            fig = obj.get(key).get("plots").get(plot).figure()
-            fig.savefig(f"./images/{key}/{plot}.png")
-
-
-
-
+#         os.makedirs(f"./images/{key}", exist_ok=True)
+#         for plot in plots:
+#             fig = obj.get(key).get("plots").get(plot).figure()
+#             fig.savefig(f"./images/{key}/{plot}.png")
