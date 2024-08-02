@@ -3,14 +3,7 @@ import pandas as pd
 
 
 def clean_resource_data(df):
-    df["Total Crimes per beat"] = df.groupby(["District_Name", "UnitName", "Beat_Name"])["FIRNo"].transform("count")
-
-    grouped_df = df.groupby(["District_Name", "UnitName", "Village_Area_Name", "Beat_Name"]).agg({"Accused Count": sum, "Arrested Count\tNo.": sum, "Accused_ChargeSheeted Count": sum  }).reset_index()
-
-    grouped_df['Accused_to_Arrested'] = grouped_df['Accused Count'] / grouped_df['Arrested Count\tNo.']
-    grouped_df['Charge_Sheeted_to_Arrested'] = grouped_df['Accused_ChargeSheeted Count'] / grouped_df['Arrested Count\tNo.']
-
-    df = df.merge(grouped_df[['District_Name', 'UnitName', 'Beat_Name', 'Accused_to_Arrested', 'Charge_Sheeted_to_Arrested']], on = ['District_Name', 'UnitName', 'Beat_Name'], how = "left")
+    df["Total Crimes per beat"] = df.groupby(["District_Name", "UnitName", "Village_Area_Name", "Beat_Name"])["FIRNo"].transform("count")
 
     df = df[(df["District_Name"]!= "CID") & (df["District_Name"]!= "ISD Bengaluru") & (df["District_Name"]!= "Coastal Security Police")]
 
@@ -109,8 +102,8 @@ def clean_resource_data(df):
 
     df = df.merge(sanctioned_df, left_on='District Name', right_index=True, how='left')
     
-    df.drop(columns = ["District_Name", "FIRNo", "Accused Count", 'Arrested Count\tNo.' ], inplace = True)
-    
+    df.drop(columns = ["District_Name", "FIRNo"], inplace = True)
+
     df.dropna(inplace = True)
     df.drop_duplicates(inplace = True)
 
@@ -255,13 +248,10 @@ def clean_resource_data(df):
 
     df.drop(columns = ["Crime Severity"], inplace = True)
 
-    df.drop_duplicates(inplace = True)
-
-    df.drop(columns = ["Accused_ChargeSheeted Count"], inplace = True)
 
     df.drop_duplicates(inplace = True)
 
-    new_order = ['District Name', 'UnitName',  'Village_Area_Name', 'Beat_Name','Total Crimes per beat', 'Accused_to_Arrested', 'Charge_Sheeted_to_Arrested','Crime_Severity_per_Beat', 'ASI', 'CHC', 'CPC']
+    new_order = ['District Name', 'UnitName',  'Village_Area_Name', 'Beat_Name','Total Crimes per beat', 'Crime_Severity_per_Beat', 'ASI', 'CHC', 'CPC']
     df = df[new_order]
 
     columns_to_rename = {'UnitName': 'Police Unit',

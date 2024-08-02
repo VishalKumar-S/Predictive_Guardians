@@ -26,7 +26,7 @@ import os
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 with st.sidebar:
-    selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Resource Allocation and Guidance', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
+    selected = option_menu("Predictive Guardians", ['Home', 'Crime Pattern Analysis', "Criminal Profiling", 'Predictive Modeling', 'Police Resource Allocation and Management', 'Continuous Learning and Feedback', 'Documentation and Resources'], 
         icons=['house-fill', 'bar-chart-fill', "fingerprint", 'cpu-fill', 'diagram-3-fill', 'book-fill', 'file-earmark-text-fill' ], 
         menu_icon="shield-shaded", default_index=0, orientation="vertical",
         styles = {
@@ -175,7 +175,7 @@ if selected == "Predictive Modeling":
         predictive_modeling_hotspot()
 
 
-if selected == "Resource Allocation and Guidance":    
+if selected == "Police Resource Allocation and Management":    
     # Construct the file path
     data_file_path = os.path.join(root_dir, 'Component_datasets', 'Resource_Allocation_Cleaned.csv')
     

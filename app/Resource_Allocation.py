@@ -74,8 +74,7 @@ def allocate_resources(option, district_name, updated_asi, updated_chc, updated_
     show = st.button("Show Allocation")
     if show:
         selected_data = selected_data.reset_index(drop=True)
-        # st.table(selected_data[["Village Area Name", "Beat Name", "Normalised Crime Severity", "Allocated ASI", "Allocated CHC", "Allocated CPC"]])
-        st.table(selected_data)
+        st.table(selected_data[["Village Area Name", "Beat Name", "Normalised Crime Severity", "Allocated ASI", "Allocated CHC", "Allocated CPC"]])
         st.session_state.default = False
         st.session_state.apply = False
 
