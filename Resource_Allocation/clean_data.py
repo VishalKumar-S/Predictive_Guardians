@@ -108,7 +108,9 @@ def clean_resource_data(df):
     sanctioned_df = pd.DataFrame(sanction_strength).T
 
     df = df.merge(sanctioned_df, left_on='District Name', right_index=True, how='left')
-
+    
+    df.drop(columns = ["District_Name", "FIRNo", "Accused Count", 'Arrested Count\tNo.' ], inplace = True)
+    
     df.dropna(inplace = True)
     df.drop_duplicates(inplace = True)
 

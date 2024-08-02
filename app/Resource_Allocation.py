@@ -3,149 +3,126 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 import numpy as np
 import streamlit.components.v1 as components
-from pulp import LpVariable, LpProblem, LpMinimize, lpSum, value
+from pulp import LpVariable, LpProblem, LpMaximize, lpSum, value
+
+def optimise_resource_allocation(district_name, sanctioned_asi, sanctioned_chc, sanctioned_cpc):
+    # Initialize the problem
+    problem = LpProblem("Optimal_Resource_Allocation", LpMaximize)
+
+    # Decision variables for each beat and officer type
+    asi_vars = LpVariable.dicts("ASI", district_name.index, lowBound=0, cat='Integer')
+    chc_vars = LpVariable.dicts("CHC", district_name.index, lowBound=0, cat='Integer')
+    cpc_vars = LpVariable.dicts("CPC", district_name.index, lowBound=0, cat='Integer')
+
+    # Objective function: Maximize the sum of weighted severity scores
+    problem += lpSum(district_name.loc[i, 'Normalised Crime Severity'] * (asi_vars[i] + chc_vars[i] + cpc_vars[i]) for i in district_name.index)
+
+    # Constraints
+    # Constraint: Total officers in each district should not exceed sanctioned strength
+    problem += lpSum(asi_vars[i] for i in district_name.index) <= sanctioned_asi
+    problem += lpSum(chc_vars[i] for i in district_name.index) <= sanctioned_chc
+    problem += lpSum(cpc_vars[i] for i in district_name.index) <= sanctioned_cpc
+
+    # Constraint: Each beat must have at least one officer
+    for i in district_name.index:
+        problem += asi_vars[i] + chc_vars[i] + cpc_vars[i] >= 1
+
+    # Constraint: Allocation based on normalized severity
+    for i in district_name.index:
+        problem += asi_vars[i] <= max(1, sanctioned_asi * district_name.loc[i, 'Normalised Crime Severity'])
+        problem += chc_vars[i] <= max(1, sanctioned_chc * district_name.loc[i, 'Normalised Crime Severity'])
+        problem += cpc_vars[i] <= max(1, sanctioned_cpc * district_name.loc[i, 'Normalised Crime Severity'])
+
+    st.write("Calculating crime severity based on crime types and crime frequency for allocating resources accordingly...")
+
+    # Solve the problem
+    problem.solve()
+
+    # Extract results
+    district_name['Allocated ASI'] = [asi_vars[i].varValue for i in district_name.index]
+    district_name['Allocated CHC'] = [chc_vars[i].varValue for i in district_name.index]
+    district_name['Allocated CPC'] = [cpc_vars[i].varValue for i in district_name.index]
+
+    columns_to_convert = ['Allocated ASI', 'Allocated CHC', 'Allocated CPC']
+    district_name[columns_to_convert] = district_name[columns_to_convert].apply(np.round).astype(int)
+
+    st.write(district_name[['District Name', 'Police Unit', 'Beat Name', 'Allocated ASI', 'Allocated CHC', 'Allocated CPC']].sample(5))
+
+    # st.write total allocations
+    st.write("Total Allocated ASI:", district_name["Allocated ASI"].sum())
+    st.write("Total Allocated CHC:", district_name["Allocated CHC"].sum())
+    st.write("Total Allocated CPC:", district_name["Allocated CPC"].sum())
+
+    # st.write max allocations to a single beat
+    st.write("Max Allocated ASI to a single beat:", district_name["Allocated ASI"].max())
+    st.write("Max Allocated CHC to a single beat:", district_name["Allocated CHC"].max())
+    st.write("Max Allocated CPC to a single beat:", district_name["Allocated CPC"].max())
+
+    return district_name
+
+def allocate_resources(option, district_name, updated_asi, updated_chc, updated_cpc):
+    st.write(f"Current sanctioned strengths for {option}:")
+    st.write(f"ASI: {updated_asi}, CHC: {updated_chc}, CPC: {updated_cpc}")
+
+    st.write("Resource allocation in progress...")
+    updated_district = optimise_resource_allocation(district_name, updated_asi, updated_chc, updated_cpc)
+    
+    st.write("Allocation complete.")
+    st.write("You can now view the resource allocation for specific police units.")
+
+    police_units = ["All"] + list(district_name["Police Unit"].unique())
+    selected_units = st.multiselect("Select Police Units to view allocation:", police_units)
+
+    if "All" in selected_units:
+        selected_data = updated_district
+    else:
+        selected_data = updated_district[updated_district["Police Unit"].isin(selected_units)]
+
+
+    show = st.button("Show Allocation")
+    if show:
+        st.table(selected_data[["Village Area Name", "Beat Name", "Normalised Crime Severity", "Allocated ASI", "Allocated CHC", "Allocated CPC"]])
+
 
 def resource_allocation(df):
+    st.write(df.shape)
+
     st.title("Police Resource Allocation and Suggestions")
     options = ["Select the District"] + list(df["District Name"].unique())
     option = st.selectbox("Select an option", options)
 
-    
+    if option != "Select the District":
+        district_name = df[df["District Name"] == option]
+        st.write(f"Selected District: {option}")
+        st.write(district_name.shape)
+        
+        default_asi = int(district_name['Sanctioned Strength of Assistant Sub-Inspectors per District'].iloc[0])
+        default_chc = int(district_name['Sanctioned Strength of Head Constables per District'].iloc[0])
+        default_cpc = int(district_name['Sanctioned Strength of Police Constables per District'].iloc[0])
 
+        sanctioned_asi = st.number_input("Sanctioned Assistant Sub-Inspectors [ASI]", value=default_asi, min_value=int(default_asi * 0.9), max_value=int(default_asi * 1.1), step=1)
+        sanctioned_chc = st.number_input("Sanctioned Head Constables [CHC]", value=default_chc, min_value=int(default_chc * 0.9), max_value=int(default_chc * 1.1), step=1)
+        sanctioned_cpc = st.number_input("Sanctioned Police Constables [CPC]", value=default_cpc, min_value=int(default_cpc * 0.9), max_value=int(default_cpc * 1.1), step=1)
 
+        if "default" not in st.session_state:
+            st.session_state.default = False
+        
+        if "apply" not in st.session_state:
+            st.session_state.apply = False
 
-# def optimize_police_allocation(optimisation, unit_name, a=0.5, b=2, r1=0.3, r2=0.5):
-#     # Filter data based on the selected unit
-#     filtered_data = optimisation[optimisation['UNITS'] == unit_name]
+        
+        default = st.button("Use default sanctioned strengths")
+        if default or st.session_state.default:
+            st.session_state.default = True
+            updated_asi = default_asi
+            updated_chc = default_chc
+            updated_cpc = default_cpc
+            allocate_resources(option, district_name, updated_asi, updated_chc, updated_cpc)
 
-
-#     # Sort DataFrame by weighted_score in descending order
-#     filtered_data = filtered_data.sort_values(by=['Crime Severity Weights of Beat', 'No of Crimes in Each Beat'], ascending=False)
-
-#     if filtered_data.empty:
-#         print(f"No data found for the selected unit: {unit_name}")
-#         return
-
-#     # Extract relevant features
-#     num_beats = len(filtered_data)
-#     total_asi = filtered_data['ASI'].iloc[0]
-#     total_chc = filtered_data['CHC'].iloc[0]
-#     total_cpc = filtered_data['CPC'].iloc[0]
-#     beat_names = filtered_data['Beat Number'].tolist()
-#     village_names = filtered_data['Village_Area_Name'].tolist()
-#     station_names = filtered_data['UNITS'].tolist()
-#     no_of_crimes = filtered_data['No of Crimes in Each Beat'].tolist()
-#     crime_severity_weights = filtered_data['Crime Severity Weights of Beat'].tolist()
-
-
-
-
-#     # Create optimization model
-#     model = LpProblem(name="Police_Allocation_Optimization", sense=LpMinimize)
-
-#     # Decision variables: ASI, CHC, CPC officers per beat
-#     asi = [LpVariable(name=f"ASI_{i}", lowBound=0, upBound=total_asi, cat='Integer') for i in range(num_beats)]
-#     chc = [LpVariable(name=f"CHC_{i}", lowBound=0, upBound=total_chc, cat='Integer') for i in range(num_beats)]
-#     cpc = [LpVariable(name=f"CPC_{i}", lowBound=0, upBound=total_cpc, cat='Integer') for i in range(num_beats)]
-
-#     # Objective function: Minimize the maximum unmet demand across all beats
-#     model += lpSum(max(1, a * int(no_of_crimes[i] ** 0.5) + b) - (asi[i] + chc[i] + cpc[i]) for i in range(num_beats))
-
-#     # Constraints
-#     # Total officers constraint
-#     model += lpSum(asi) <= total_asi
-#     model += lpSum(chc) <= total_chc
-#     model += lpSum(cpc) <= total_cpc
-
-#     max_officers_per_beat = 10
-#     # Minimum and maximum officers per beat constraint
-#     for i in range(num_beats):
-#         model += asi[i] + chc[i] + cpc[i] <= max_officers_per_beat
-#         model += asi[i] + chc[i] + cpc[i] >= 2
-#         model += asi[i] <=1
-
-
-#     # Officer type ratio constraint
-#     for i in range(num_beats):
-#         # Define the total number of non-ASI officers (CHC + CPC)
-#         non_asi_officers = chc[i] + cpc[i]
-
-#         # Add the constraint for ASI officers ratio
-#         #model += asi[i] <= r1 * non_asi_officers
-
-#         # Add the constraint for CHC officers ratio with CPC officers
-#         model += chc[i] <= r2 * cpc[i]
-
-
-
-#     # Solve the optimization problem
-#     try:
-#         model.solve()
-#     except Exception as e:
-#         print(f"Error occurred during optimization: {e}")
-#         return
-
-#     # Output optimal allocation results
-#     print(f"Optimal Police Resource Allocation for {unit_name}:")
-#     print(f"Total no of officers in {unit_name} is ASI:{total_asi}, CHC: {total_chc}, CPC: {total_cpc}")
-#     # for i in range(num_beats):
-#     #     print(f"Beat {beat_names[i]}: ASI={int(value(asi[i]))}, CHC={int(value(chc[i]))}, CPC={int(value(cpc[i]))}, crime severity of beat = {crime_severity_weights[i]}, no of crimes = {no_of_crimes[i]}")
-
-
-
-
-
-#     asi_sum = sum(int(value(asi[i])) for i in range(num_beats))
-#     chc_sum = sum(int(value(chc[i])) for i in range(num_beats))
-#     cpc_sum = sum(int(value(cpc[i])) for i in range(num_beats))
-
-#     return num_beats, asi_sum, chc_sum, cpc_sum, beat_names, village_names, station_names,asi, chc, cpc, crime_severity_weights, no_of_crimes
-
-
-# def display_police_allocation(num_beats, unit_name, asi_sum, chc_sum, cpc_sum, beat_names, village_names, station_names, asi, chc, cpc, crime_severity_weights, no_of_crimes):
-#     st.subheader(f"Police Resource Allocation for {unit_name}")
-#     st.write(f"Total no of Assistant Sub Inspectors [ASI] in {unit_name} is {asi_sum}")
-#     st.write(f"Total no of Head Constables [CHC] in {unit_name} is {chc_sum}")
-#     st.write(f"Total no of Police Constables [CPC] in {unit_name} is {cpc_sum}")
-
-
-
-#     st.write(f"""
-#     ### Optimal Police Resource Allocation
-    
-#     The police resources have been allocated based on the following principles:
-    
-#     1. **Prioritizing High-Risk Areas**: The beats with the highest crime severity, as determined by a weighted metric accounting for the number and severity of past crimes, have been allocated more police personnel.
-    
-#     2. **Balancing Resource Distribution**: The allocation of ASI, CHC, and CPC officers has been carefully balanced based on the unique strengths and responsibilities of each role, ensuring a comprehensive and coordinated response.
-    
-#     The table below shows the optimized distribution of police resources across the different beats within the {unit_name} area.
-#     """)
-
-#     st.write("**Allocation Details:**")
-#     data = {
-#         "Police Station": station_names,
-#         "Area name": village_names,
-#         "Beat Number": beat_names,
-#         "ASI": [int(value.value()) for value in asi],
-#         "CHC": [int(value.value()) for value in chc],
-#         "CPC": [int(value.value()) for value in cpc],
-#         "Crime Severity of Beat": [int(weight) for weight in crime_severity_weights],
-#         "No of Previous Crimes": [no_of_crimes[i] for i in range(num_beats)]
-#     }
-
-#     df = pd.DataFrame(data)
-#     st.table(df)
-
-# def resource_allocation(df):
-#     st.title("Police Resource Allocation and Suggestions")
-#     options = ["Select the District"] + list(df["UNITS"].unique())
-#     option = st.selectbox("Select an option", options)
-
-#     if option != "Select an Unit":
-#         unit_name = option
-#         num_beats, asi_sum, chc_sum, cpc_sum, beat_names,village_names, station_names, asi, chc, cpc, crime_severity_weights, no_of_crimes = optimize_police_allocation(df, unit_name)
-#         display_police_allocation(num_beats, unit_name, asi_sum, chc_sum, cpc_sum, beat_names, village_names, station_names, asi, chc, cpc, crime_severity_weights, no_of_crimes)
-
-
-
+        apply = st.button("Apply")
+        if apply or st.session_state.apply:
+            st.session_state.apply = True
+            updated_asi = sanctioned_asi
+            updated_chc = sanctioned_chc
+            updated_cpc = sanctioned_cpc
+            allocate_resources(option, district_name, updated_asi, updated_chc, updated_cpc)
