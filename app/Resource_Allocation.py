@@ -46,28 +46,19 @@ def optimise_resource_allocation(district_name, sanctioned_asi, sanctioned_chc, 
     columns_to_convert = ['Allocated ASI', 'Allocated CHC', 'Allocated CPC']
     district_name[columns_to_convert] = district_name[columns_to_convert].apply(np.round).astype(int)
 
-    st.write(district_name[['District Name', 'Police Unit', 'Beat Name', 'Allocated ASI', 'Allocated CHC', 'Allocated CPC']].sample(5))
-
-    # st.write total allocations
-    st.write("Total Allocated ASI:", district_name["Allocated ASI"].sum())
-    st.write("Total Allocated CHC:", district_name["Allocated CHC"].sum())
-    st.write("Total Allocated CPC:", district_name["Allocated CPC"].sum())
-
-    # st.write max allocations to a single beat
-    st.write("Max Allocated ASI to a single beat:", district_name["Allocated ASI"].max())
-    st.write("Max Allocated CHC to a single beat:", district_name["Allocated CHC"].max())
-    st.write("Max Allocated CPC to a single beat:", district_name["Allocated CPC"].max())
-
     return district_name
 
+
 def allocate_resources(option, district_name, updated_asi, updated_chc, updated_cpc):
-    st.write(f"Current sanctioned strengths for {option}:")
+
+    st.write(f"### Current sanctioned strengths for {option}:")
     st.write(f"ASI: {updated_asi}, CHC: {updated_chc}, CPC: {updated_cpc}")
 
-    st.write("Resource allocation in progress...")
+    st.write("### Resource allocation in progress...")
+
     updated_district = optimise_resource_allocation(district_name, updated_asi, updated_chc, updated_cpc)
     
-    st.write("Allocation complete.")
+    st.write("### Allocation complete.")
     st.write("You can now view the resource allocation for specific police units.")
 
     police_units = ["All"] + list(district_name["Police Unit"].unique())
@@ -79,22 +70,25 @@ def allocate_resources(option, district_name, updated_asi, updated_chc, updated_
         selected_data = updated_district[updated_district["Police Unit"].isin(selected_units)]
 
 
+
     show = st.button("Show Allocation")
     if show:
-        st.table(selected_data[["Village Area Name", "Beat Name", "Normalised Crime Severity", "Allocated ASI", "Allocated CHC", "Allocated CPC"]])
+        selected_data = selected_data.reset_index(drop=True)
+        # st.table(selected_data[["Village Area Name", "Beat Name", "Normalised Crime Severity", "Allocated ASI", "Allocated CHC", "Allocated CPC"]])
+        st.table(selected_data)
+        st.session_state.default = False
+        st.session_state.apply = False
+
 
 
 def resource_allocation(df):
-    st.write(df.shape)
-
-    st.title("Police Resource Allocation and Suggestions")
+    st.title("Police Resource Allocation and Management")
     options = ["Select the District"] + list(df["District Name"].unique())
     option = st.selectbox("Select an option", options)
 
     if option != "Select the District":
         district_name = df[df["District Name"] == option]
-        st.write(f"Selected District: {option}")
-        st.write(district_name.shape)
+        st.write(f"### Selected District: {option}")
         
         default_asi = int(district_name['Sanctioned Strength of Assistant Sub-Inspectors per District'].iloc[0])
         default_chc = int(district_name['Sanctioned Strength of Head Constables per District'].iloc[0])
@@ -112,15 +106,21 @@ def resource_allocation(df):
 
         
         default = st.button("Use default sanctioned strengths")
-        if default or st.session_state.default:
+        
+        apply = st.button("Apply")
+
+        if (default or st.session_state.default) and not st.session_state.apply :
+            st.session_state.apply = False
             st.session_state.default = True
             updated_asi = default_asi
             updated_chc = default_chc
             updated_cpc = default_cpc
             allocate_resources(option, district_name, updated_asi, updated_chc, updated_cpc)
 
-        apply = st.button("Apply")
-        if apply or st.session_state.apply:
+
+
+        if (apply or st.session_state.apply) and not st.session_state.default:
+            st.session_state.default = False
             st.session_state.apply = True
             updated_asi = sanctioned_asi
             updated_chc = sanctioned_chc
