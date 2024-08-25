@@ -15,9 +15,8 @@ import seaborn as sns
 from streamlit_folium import folium_static
 import pickle
 from folium.plugins import HeatMap
-
-
-
+from datetime import datetime
+import branca.colormap as cm
 
 def temporal_analysis(crime_pattern_analysis):
 
@@ -63,23 +62,22 @@ def temporal_analysis(crime_pattern_analysis):
         st.plotly_chart(fig, use_container_width=True)
 
 
-
-def cluster_analysis(df, mean_lat, mean_lon):
-    # Prepare data for clustering
-    coords = df[['Latitude', 'Longitude']].values
-
-    # Perform DBSCAN clustering
-    dbscan = DBSCAN(eps=0.1, min_samples=5)
-    df['Cluster'] = dbscan.fit_predict(coords)
+def crime_hotspot_analysis(df, mean_lat, mean_lon):
     # Create base map
     m = folium.Map(location=[mean_lat, mean_lon], zoom_start=8)
 
-    # Add heatmap
-    heat_data = [[row['Latitude'], row['Longitude']] for index, row in df.iterrows()]
-    HeatMap(heat_data).add_to(m)
+    # Create colormap
+    colormap = cm.LinearColormap(colors=['blue', 'yellow', 'red'], vmin=0, vmax=df['Count'].max())
 
-#     heatmap = plugins.HeatMap(crimes, radius=15)
-#     crime_map.add_child(heatmap)
+    # Add heatmap
+    HeatMap(df[['Latitude', 'Longitude', 'Count']].values.tolist(), 
+            gradient={0.4: 'blue', 0.65: 'yellow', 1: 'red'}, 
+            radius=15).add_to(m)
+
+    # Perform DBSCAN clustering
+    coords = df[['Latitude', 'Longitude']].values
+    dbscan = DBSCAN(eps=0.1, min_samples=5)
+    df['Cluster'] = dbscan.fit_predict(coords)
 
     # Add markers for cluster centers
     for cluster in df['Cluster'].unique():
@@ -87,67 +85,74 @@ def cluster_analysis(df, mean_lat, mean_lon):
             cluster_points = df[df['Cluster'] == cluster]
             center_lat = cluster_points['Latitude'].mean()
             center_lon = cluster_points['Longitude'].mean()
-            folium.CircleMarker(
+            count = cluster_points['Count'].sum()
+            folium.Marker(
                 [center_lat, center_lon],
-                radius=8,
-                popup=f'Cluster {cluster}',
-                color='red',
-                fill=True
+                popup=f'Cluster {cluster}<br>Crimes: {count}',
+                icon=folium.Icon(color='red', icon='info-sign')
             ).add_to(m)
 
-    # Display the map
-    st.components.v1.html(m._repr_html_(), width=700, height=500)
+    # Add colormap legend to map
+    colormap.add_to(m)
+    colormap.caption = 'Crime Density'
 
-# Call the function
-#crime_hotspot_analysis(df, mean_lat, mean_lon)
-
-# def cluster_analysis(sampled_data,mean_lat, mean_lon):
-#     # Select relevant features
-#     features = ['Latitude', 'Longitude', 'CrimeGroup_Name']
-#     crime_data = sampled_data[features]                     
+    return m
 
 
-#     # Convert latitude and longitude to coordinates
-#     coords = crime_data[['Latitude', 'Longitude']].values
 
-#     # Perform DBSCAN clustering
-#     dbscan = DBSCAN(eps=0.01, min_samples=10)
-#     clusters = dbscan.fit_predict(np.radians(coords))
+def crime_hotspots(crime_pattern_analysis, mean_lat, mean_lon):
+    # Date range filter
+    dates = st.radio("Select Date Range",["All","Custom Date Range"])
 
-#     # Add cluster labels to the dataset
-#     crime_data['Cluster'] = clusters
+    if dates == "All":
+        date_range = (crime_pattern_analysis['Date'].min(),crime_pattern_analysis['Date'].max())
+    if dates == "Custom Date Range":
+        date_range = st.date_input("Select date range", 
+                                [crime_pattern_analysis['Date'].min(), crime_pattern_analysis['Date'].max()],
+                                key='date_range')
 
-#     # Interactive Folium Map
-#     crime_map = folium.Map(location=[mean_lat, mean_lon], zoom_start=8)
+    if len(date_range) != 2:
+        st.stop()
 
-#     # Add markers for each crime incident, colored by cluster
-#     for idx, row in crime_data.iterrows():
-#         folium.CircleMarker(
-#             location=[row['Latitude'], row['Longitude']],
-#             radius=5,
-#             color='red' if row['Cluster'] == -1 else 'green',
-#             fill=True,
-#             fill_color='red' if row['Cluster'] == -1 else 'green',
-#             fill_opacity=0.6,
-#             tooltip=f"Cluster: {row['Cluster']}<br>Crime Group: {row['CrimeGroup_Name']}<br>"
-#         ).add_to(crime_map)
+    # Crime type filter
+    crime_types = st.multiselect("Select crime types", crime_pattern_analysis['CrimeGroup_Name'].unique())
 
-#     # Add a heatmap layer
-#     crimes = crime_data[['Latitude', 'Longitude']].values.tolist()
-#     heatmap = plugins.HeatMap(crimes, radius=15)
-#     crime_map.add_child(heatmap)
+    if len(crime_types)==0:
+        st.warning("Choose the desired Crime Groups from the above filters to see the map")
+    
 
-#     folium_static(crime_map)
+    # Filter data
+    filtered_data = crime_pattern_analysis[
+        (crime_pattern_analysis['Date'] >= pd.Timestamp(date_range[0])) & 
+        (crime_pattern_analysis['Date'] <= pd.Timestamp(date_range[1]))
+    ]
+    if crime_types:
+        filtered_data = filtered_data[filtered_data['CrimeGroup_Name'].isin(crime_types)]
+    
+    if st.button("Apply") and len(crime_types)!=0:
+        # Aggregate data
+        aggregated_data = filtered_data.groupby(['District_Name', 'UnitName', 'Latitude', 'Longitude', 'CrimeGroup_Name']).size().reset_index(name='Count')
 
+        # Calculate mean lat and lon
+        mean_lat = aggregated_data['Latitude'].mean()
+        mean_lon = aggregated_data['Longitude'].mean()
+
+        # Create and display maps
+        m = crime_hotspot_analysis(aggregated_data, mean_lat, mean_lon)
+        folium_static(m)
+
+
+        # Explanation
+        st.markdown("""
+        **How to interpret the map:**
+        - The heatmap shows the density of crimes. Red areas have more crimes.
+        - Markers on the interactive map show the centers of high-crime clusters.
+        - Use the date range and crime type filters to explore patterns over time and by crime category.
+        - Zoom in for more detail in specific areas.
+        """)
  
 
-def heat_maps(df, mean_lat, mean_lon, lat_col, lon_col, color_col, title):
-    fig = px.density_mapbox(df, lat=lat_col, lon=lon_col, z=color_col, radius=5,
-                            center=dict(lat=mean_lat, lon=mean_lon),
-                            zoom=10, mapbox_style="open-street-map",
-                            title=title)
-    fig.update_layout(margin=dict(r=0, l=0, t=0, b=0))
-    st.plotly_chart(fig)
+
 
 
 def chloropleth_maps(df, geojson_data, mean_lat, mean_lon):

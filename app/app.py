@@ -136,8 +136,8 @@ if selected == "Crime Pattern Analysis":
 
     mean_lat_sampled = crime_pattern_analysis['Latitude'].mean()
     mean_lon_sampled = crime_pattern_analysis['Longitude'].mean()
-        
-    cluster_analysis(crime_pattern_analysis,mean_lat_sampled, mean_lon_sampled)
+    crime_pattern_analysis['Date'] = pd.to_datetime(crime_pattern_analysis[['Year', 'Month', 'Day']])
+    crime_hotspots(crime_pattern_analysis,mean_lat_sampled, mean_lon_sampled)
 
 
 
