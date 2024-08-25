@@ -51,10 +51,7 @@ def load_data_crime_type():
     data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Type_cleaned_data.csv')
     return pd.read_csv(data_file_path)
 
-@st.cache_data
-def load_data_hotspot():
-    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Hotspot_Cleaned.csv')
-    return pd.read_csv(data_file_path)
+
 
 # Load the model
 @st.cache_resource
