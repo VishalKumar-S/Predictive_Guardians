@@ -197,7 +197,7 @@ def generate_legend_html(category_to_color):
 
 def predictive_modeling_hotspot():
     hotspot = load_data_hotspot()
-
+    st.write(hotspot.shape)
     # Encode the 'Crime Group' feature
     label_encoder = LabelEncoder()
     hotspot['Crime Group Encoded'] = label_encoder.fit_transform(hotspot['Crime Group'])

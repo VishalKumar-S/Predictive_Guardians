@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from streamlit_folium import folium_static
 import pickle
+from folium.plugins import HeatMap
 
 
 
@@ -63,50 +64,82 @@ def temporal_analysis(crime_pattern_analysis):
 
 
 
-def cluster_analysis(sampled_data,mean_lat, mean_lon):
-    # Select relevant features
-    features = ['Latitude', 'Longitude', 'CrimeGroup_Name', 'CrimeHead_Name']
-    crime_data = sampled_data[features]                     
-
-
-    # Convert latitude and longitude to coordinates
-    coords = crime_data[['Latitude', 'Longitude']].values
+def cluster_analysis(df, mean_lat, mean_lon):
+    # Prepare data for clustering
+    coords = df[['Latitude', 'Longitude']].values
 
     # Perform DBSCAN clustering
-    dbscan = DBSCAN(eps=0.01, min_samples=10)
-    clusters = dbscan.fit_predict(np.radians(coords))
+    dbscan = DBSCAN(eps=0.1, min_samples=5)
+    df['Cluster'] = dbscan.fit_predict(coords)
+    # Create base map
+    m = folium.Map(location=[mean_lat, mean_lon], zoom_start=8)
 
-    # Add cluster labels to the dataset
-    crime_data['Cluster'] = clusters
+    # Add heatmap
+    heat_data = [[row['Latitude'], row['Longitude']] for index, row in df.iterrows()]
+    HeatMap(heat_data).add_to(m)
 
-    # Interactive Folium Map
-    crime_map = folium.Map(location=[mean_lat, mean_lon], zoom_start=8)
+#     heatmap = plugins.HeatMap(crimes, radius=15)
+#     crime_map.add_child(heatmap)
 
-    # Add markers for each crime incident, colored by cluster
-    for idx, row in crime_data.iterrows():
-        folium.CircleMarker(
-            location=[row['Latitude'], row['Longitude']],
-            radius=5,
-            color='red' if row['Cluster'] == -1 else 'green',
-            fill=True,
-            fill_color='red' if row['Cluster'] == -1 else 'green',
-            fill_opacity=0.6,
-            tooltip=f"Cluster: {row['Cluster']}<br>Crime Group: {row['CrimeGroup_Name']}<br>Crime Head: {row['CrimeHead_Name']}"
-        ).add_to(crime_map)
+    # Add markers for cluster centers
+    for cluster in df['Cluster'].unique():
+        if cluster != -1:  # -1 is noise in DBSCAN
+            cluster_points = df[df['Cluster'] == cluster]
+            center_lat = cluster_points['Latitude'].mean()
+            center_lon = cluster_points['Longitude'].mean()
+            folium.CircleMarker(
+                [center_lat, center_lon],
+                radius=8,
+                popup=f'Cluster {cluster}',
+                color='red',
+                fill=True
+            ).add_to(m)
 
-    # Add a heatmap layer
-    crimes = crime_data[['Latitude', 'Longitude']].values.tolist()
-    heatmap = plugins.HeatMap(crimes, radius=15)
-    crime_map.add_child(heatmap)
+    # Display the map
+    st.components.v1.html(m._repr_html_(), width=700, height=500)
 
-    folium_static(crime_map)
+# Call the function
+#crime_hotspot_analysis(df, mean_lat, mean_lon)
 
-    #Cluster Statistics
-    st.write("Cluster Statistics")
-    cluster_stats = crime_data.groupby(['Cluster', 'CrimeGroup_Name'])['CrimeHead_Name'].count().reset_index()
-    fig = px.bar(cluster_stats, x='CrimeGroup_Name', y='CrimeHead_Name', color='Cluster', barmode='group', title='Distribution of Crime Types within Clusters')
-    # Display Plotly figure
-    st.plotly_chart(fig)
+# def cluster_analysis(sampled_data,mean_lat, mean_lon):
+#     # Select relevant features
+#     features = ['Latitude', 'Longitude', 'CrimeGroup_Name']
+#     crime_data = sampled_data[features]                     
+
+
+#     # Convert latitude and longitude to coordinates
+#     coords = crime_data[['Latitude', 'Longitude']].values
+
+#     # Perform DBSCAN clustering
+#     dbscan = DBSCAN(eps=0.01, min_samples=10)
+#     clusters = dbscan.fit_predict(np.radians(coords))
+
+#     # Add cluster labels to the dataset
+#     crime_data['Cluster'] = clusters
+
+#     # Interactive Folium Map
+#     crime_map = folium.Map(location=[mean_lat, mean_lon], zoom_start=8)
+
+#     # Add markers for each crime incident, colored by cluster
+#     for idx, row in crime_data.iterrows():
+#         folium.CircleMarker(
+#             location=[row['Latitude'], row['Longitude']],
+#             radius=5,
+#             color='red' if row['Cluster'] == -1 else 'green',
+#             fill=True,
+#             fill_color='red' if row['Cluster'] == -1 else 'green',
+#             fill_opacity=0.6,
+#             tooltip=f"Cluster: {row['Cluster']}<br>Crime Group: {row['CrimeGroup_Name']}<br>"
+#         ).add_to(crime_map)
+
+#     # Add a heatmap layer
+#     crimes = crime_data[['Latitude', 'Longitude']].values.tolist()
+#     heatmap = plugins.HeatMap(crimes, radius=15)
+#     crime_map.add_child(heatmap)
+
+#     folium_static(crime_map)
+
+ 
 
 def heat_maps(df, mean_lat, mean_lon, lat_col, lon_col, color_col, title):
     fig = px.density_mapbox(df, lat=lat_col, lon=lon_col, z=color_col, radius=5,
@@ -115,6 +148,7 @@ def heat_maps(df, mean_lat, mean_lon, lat_col, lon_col, color_col, title):
                             title=title)
     fig.update_layout(margin=dict(r=0, l=0, t=0, b=0))
     st.plotly_chart(fig)
+
 
 def chloropleth_maps(df, geojson_data, mean_lat, mean_lon):
     # Group data by District_Name and aggregate by count of incidents, victim count, and accused count

@@ -116,3 +116,6 @@ def clean_crime_hotspot(hotspot):
     hotspot = hotspot.drop('CrimeGroup_Name', axis =1)
 
     hotspot = hotspot.drop_duplicates(subset = ["Year", "Month", "Day"])
+
+
+    

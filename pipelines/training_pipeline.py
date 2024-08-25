@@ -24,7 +24,7 @@ from Predictive_Modeling.Crime_Type_Prediction.train_model import *
 
 def crime_pattern_analysis():
     raw_data = ingest_crime_pattern_analysis()
-    cleaned_data = clean_data_crime_pattern_analysis()
+    cleaned_data = clean_data_crime_pattern_analysis(raw_data)
     cleaned_data = update_crime_lat_long(cleaned_data)
 
 
@@ -47,6 +47,8 @@ def predictive_modeling():
 def resource_allocation():
     raw_data = ingest_resource_data()
     cleaned_data = clean_resource_data(raw_data)
+
+
 
 
 

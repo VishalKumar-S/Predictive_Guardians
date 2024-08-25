@@ -10,11 +10,10 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s', ha
 
 
 
-def clean_data_crime_pattern_analysis():
-    clean_df= pd.read_csv("../datasets/Crime Pattern Analysis/Crime_Pattern_Analysis_Raw.csv")
+def clean_data_crime_pattern_analysis(clean_df):
 
     #Drop Duplicates
-    clean_df = clean_df.drop_duplicates()
+    clean_df.drop_duplicates(inplace = True)
     logging.info(" Duplicate observations are removed")
 
     #Rename features
@@ -43,7 +42,7 @@ def clean_data_crime_pattern_analysis():
     #Impute Latitude and Longitude values
     # Load  datasets
     crime_pattern_analysis = clean_df.copy()
-    PS_lat_long = pd.read_csv('../datasets/Crime Pattern Analysis/Polce_Stations_Lat_Long.csv')
+    PS_lat_long = pd.read_csv('../datasets/Polce_Stations_Lat_Long.csv')
 
     # merge both datasets
     crime_data = pd.merge(crime_pattern_analysis,PS_lat_long, on = "UnitName", suffixes=('_first', '_second'))

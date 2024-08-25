@@ -126,35 +126,18 @@ if selected == "Crime Pattern Analysis":
     chloropleth_maps(crime_pattern_analysis, geojson_data, mean_lat, mean_lon)
     
 
-    # st.subheader("Heat Maps")
 
-    # options = ["Spatial Distribution of Crimes", 
-    #         "Temporal Distribution of Crimes by Year",
-    #         "Temporal Distribution of Crimes by Month"]
-    # heatmap_type = st.selectbox("Choose Heatmap Type", options)
-
-    # # Display the selected heat map
-    # if heatmap_type == "Spatial Distribution of Crimes":
-    #     heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'CrimeGroup_Name', 'Spatial Distribution of Crimes')
-    # elif heatmap_type == "Temporal Distribution of Crimes by Year":
-    #     heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'Year', 'Temporal Distribution of Crimes by Year')
-    # elif heatmap_type == "Temporal Distribution of Crimes by Month":
-    #     heat_maps(crime_pattern_analysis, mean_lat, mean_lon, 'Latitude', 'Longitude', 'Month', 'Temporal Distribution of Crimes by Month')
 
 
      
-    st.subheader("Cluster Analysis")
+    st.subheader("Crime Hotspot Map")
     crime_pattern_analysis = crime_pattern_analysis.reset_index(drop=True)
 
-    # Randomly select 20% of observations from each unique combination of 'District_Name' and 'UnitName'
-    sampled_data = crime_pattern_analysis.groupby(['District_Name', 'UnitName'], group_keys=False).apply(lambda x: x.sample(frac=0.01, random_state=1))
 
-    # Reset the index of the sampled data
-    sampled_data = sampled_data.reset_index(drop=True)
-    mean_lat_sampled = sampled_data['Latitude'].mean()
-    mean_lon_sampled = sampled_data['Longitude'].mean()
+    mean_lat_sampled = crime_pattern_analysis['Latitude'].mean()
+    mean_lon_sampled = crime_pattern_analysis['Longitude'].mean()
         
-    cluster_analysis(sampled_data,mean_lat_sampled, mean_lon_sampled)
+    cluster_analysis(crime_pattern_analysis,mean_lat_sampled, mean_lon_sampled)
 
 
 

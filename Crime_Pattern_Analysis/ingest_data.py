@@ -13,7 +13,7 @@ def ingest_crime_pattern_analysis():
 
     #Select relevant columns from FIR dataset
     fir_relevant = fir_details[['District_Name', 'UnitName', 'FIRNo', 'Year', 'Month',
-    'FIR_Reg_DateTime', 'CrimeGroup_Name', 'CrimeHead_Name', 'Latitude', 'Longitude', 'Distance from PS', 'VICTIM COUNT', 'Accused Count']]
+    'FIR_Reg_DateTime', 'CrimeGroup_Name', 'Latitude', 'Longitude', 'Distance from PS', 'VICTIM COUNT', 'Accused Count']]
 
 
     raw_data = pd.DataFrame(fir_relevant)
