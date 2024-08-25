@@ -6,8 +6,6 @@ from Crime_Pattern_Analysis.ingest_data import *
 from Crime_Pattern_Analysis.clean_data import *
 from Criminal_Profiling.ingest_data import *
 from Criminal_Profiling.clean_data import *
-from Predictive_Modeling.Crime_Hotspot_Prediction.ingest_data import *
-from Predictive_Modeling.Crime_Hotspot_Prediction.clean_data import *
 from Predictive_Modeling.Recidivism_Prediction.ingest_data import *
 from Predictive_Modeling.Recidivism_Prediction.clean_data import *
 from Predictive_Modeling.Recidivism_Prediction.train_model import *
@@ -41,8 +39,6 @@ def predictive_modeling():
     raw_data =  ingest_crime_type_data()
     cleaned_data =  clean_Crime_type_data(raw_data)
     train_crime_type_model(cleaned_data)
-    raw_data = ingest_hotspot_data()
-    clean_hotspot_data(raw_data)
 
 def resource_allocation():
     raw_data = ingest_resource_data()
