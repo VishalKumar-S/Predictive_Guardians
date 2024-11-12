@@ -46,10 +46,10 @@ def load_model_recidivism():
     saved_model = h2o.import_mojo(model_file_path)
     return saved_model
 
-@st.cache_data
-def load_data_crime_type():
-    data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Type_cleaned_data.csv')
-    return pd.read_csv(data_file_path)
+# @st.cache_data
+# def load_data_crime_type():
+#     data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Type_cleaned_data.csv')
+#     return pd.read_csv(data_file_path)
 
 
 
@@ -139,58 +139,6 @@ def predictive_modeling_recidivism():
             st.warning("🔴 The person is likely to repeat the crime.")
 
 
-
-def predictive_modeling_crime_type():
-    st.subheader("Crime Type Prediction App")
-
-    h2o.init()
-
-    # Load the model
-    model = load_model_crime_type()
-
-    cleaned_data_crime_type = load_data_crime_type()
-    # Get unique values for categorical features
-    unique_district = get_unique_values_crime_type(cleaned_data_crime_type, 'District_Name')
-
-
-    # Get user inputs
-    district_name = st.selectbox("Enter District Name:", unique_district)
-    offence_from_day = st.number_input("Offence From Day:", min_value=1, max_value=31)
-    offence_from_month = st.number_input("Offence From Month:", min_value=1, max_value=12)
-    offence_from_year = st.number_input("Offence From Year:", min_value=1927, max_value=2024)
-    offence_to_day = st.number_input("Offence To Day:", min_value=1, max_value=31)
-    offence_to_month = st.number_input("Offence To Month:", min_value=1, max_value=12)
-    offence_to_year = st.number_input("Offence To Year:", min_value=1990, max_value=2024)
-
-
-
-
-    # Create a new data point
-    new_data_crime_type = pd.DataFrame({
-        'District_Name': [district_name],
-        'Offence_From_Year': [offence_from_year],
-        'Offence_From_Month': [offence_from_month],
-        'Offence_From_Day': [offence_from_day],
-        'Offence_To_Year': [offence_to_year],
-        'Offence_To_Month': [offence_to_month],
-        'Offence_To_Day': [offence_to_day]
-    })
-
-    
-    new_dataframe = h2o.H2OFrame(new_data_crime_type)
-
-    # Make a prediction
-    if st.button("Predict"):
-        prediction = model.predict(new_dataframe)
-        prediction = prediction.as_data_frame()['predict'][0]
-        st.success(f"Predicted crime to be happen most is: {prediction}")
-
-def generate_legend_html(category_to_color):
-    legend_html = '<b>Crime Groups:</b><ul>'
-    for category, color in category_to_color.items():
-        legend_html += f'<li><span style="color:{color};">&#9632;</span> {category}</li>'
-    legend_html += '</ul>'
-    return legend_html
 
 
 
