@@ -8,7 +8,7 @@
 2. [Crime Pattern Analysis 🔍](#crime-pattern-analysis)
     * [Temporal Analysis 🕰️](#temporal-analysis)
     * [Spatial Analysis 🗺️](#spatial-analysis)
-    * [Cluster Analysis 🔗](#cluster-analysis)
+    * [Crime Hotspots 🚨](#crime-hotspots)
 3. [Criminal Profiling 👨‍🏫](#criminal-profiling)
     * [Demographic Analysis 👥](#demographic-analysis)
     * [Offense Category Analysis 📊](#offense-category-analysis)
@@ -56,12 +56,12 @@ The Spatial Analysis component provides a comprehensive view of the geographic d
 
 ![Choropleth Analysis](assets/choropleth_map.PNG)
 
-<a id="cluster-analysis"></a>
-## Cluster Analysis 🔗
-The Cluster Analysis component takes a deep dive into the underlying patterns and associations within crime data. By grouping similar crime incidents based on factors like location, time, crime type, and offender characteristics, our solution uncovers emerging or shifting crime trends that might otherwise be overlooked. This powerful feature enables law enforcement agencies to stay one step ahead of the criminals, anticipating and addressing emerging threats proactively. 🕵️‍♀️
+<a id="crime-hotspots"></a>
+## Crime Hotspots 🚨
+The Crime Hotspots component is a geospatial analysis tool that transforms complex crime data into an intuitive, interactive map 🗺️. By enabling dynamic filtering of crime types and date ranges, it provides law enforcement and community leaders with real-time insights into crime patterns, helping them visualize high-density crime areas through color-coded heatmaps and strategic markers 🚨. This feature turns raw data into a proactive safety strategy, empowering users to understand and respond to emerging crime trends 🛡️.
 
 
-![Cluster Analysis](assets/Cluster_analysis.png)
+![Crime Hotspot Map](assets/crime_hotspot_map.PNG)
 
 Throughout the Crime Pattern Analysis component, we have seamlessly integrated interactive visualizations and intuitive user interfaces to ensure a seamless and engaging experience for our users. 🖥️ Whether you're a seasoned crime analyst or a policymaker seeking to drive change, Predictive Guardians' Crime Pattern Analysis tools will provide you with the insights and decision support you need to build safer and more resilient communities. 🌇
 
