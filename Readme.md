@@ -16,14 +16,17 @@
     * [Repeat Offense Prediction 🔁](#recidivism-prediction)
 5. [Police Resource Allocation 🔒](#police-resource-allocation)
     * [User Input 🙋‍♂️](#user-input)
-    * [Resource Allocation 🎯](#resource-allocation)
+    * [Allocation Algorithm🎯](#allocation-algorithm)
 6. [Continuous Learning and Feedback 💻🔍](#continuous-learning-and-feedback)
     * [Police Resource Allocation 🔒](#police-resource-allocation-1)
     * [Provide Feedback 📝](#provide-feedback)
     * [Knowledge Base 📚](#knowledge-base)
     * [Feedback Sessions 🤝](#feedback-sessions)
     * [Alert Monitoring 🔔](#alert-monitoring)
-7. [Conclusion 🌏](#conclusion)
+
+7. [Necessary Installations](#necessary-installations) 🛠️
+8. [Running the Project](#running-the-project) 🚀
+9. [Conclusion 🌏](#conclusion)
 
 
 
@@ -31,15 +34,15 @@
 # Introduction 🌟
 In today's world, where crime patterns are often reactive rather than proactive, law enforcement agencies face a daunting challenge in optimizing their resources and strategies. 🤔 However, the tide is turning, and the future of crime prevention is here with Predictive Guardians - an innovative, AI-powered solution that is set to revolutionize the way we approach public safety. 🚨
 
-Predictive Guardians utilises advanced data analysis and machine learning to uncover the hidden patterns and trends in criminal activities. 🔍 By leveraging a comprehensive suite of analytical tools, our solution empowers law enforcement agencies to make data-driven decisions, enabling them to allocate their resources more efficiently and effectively. 💼
+Predictive Guardians utilises advanced data analysis and machine learning to uncover the hidden patterns and trends in criminal activities. 🔍 By integrating a comprehensive suite of analytical tools, my solution empowers law enforcement agencies to make data-driven decisions, enabling them to allocate their resources more efficiently and effectively. 💼
 
-From spatial analysis to criminal profiling, and from predictive modeling to resource allocation, Predictive Guardians is a one-stop-shop for proactive crime prevention. 🗺️ Through a seamless integration of cutting-edge technologies, my platform provides law enforcement agencies with the insights and actionable intelligence they need to stay one step ahead of the criminals. 🕵️‍♀️
+From spatial analysis to criminal profiling, and from predictive modeling to resource allocation, Predictive Guardians is a one-stop solution for proactive crime prevention. 🗺️ My platform provides law enforcement agencies with the insights and actionable intelligence they need to stay one step ahead of the criminals. 🕵️‍♀️
 
-Join me on this transformative journey as we redefine the future of public safety and ensure that our communities are safe, secure, and resilient. 🌍 With Predictive Guardians at your fingertips, the path to a safer tomorrow is within reach. 🚀
+
 
 <a id="crime-pattern-analysis"></a>
 # Crime Pattern Analysis 🔍
-The Crime Pattern Analysis component of our solution focuses on understanding the spatial, temporal, and cluster-based patterns of crime data. By utlising advanced data visualization and analysis techniques, we empower law enforcement agencies to uncover hidden insights and trends, ultimately enabling more informed and effective decision-making. 📊
+The Crime Pattern Analysis component of my solution focuses on understanding the spatial, temporal, and cluster-based patterns of crime data. By utlising advanced data visualization and analysis techniques, it empowers law enforcement agencies to uncover hidden insights and trends, ultimately enabling more informed and effective decision-making. 📊
 
 <a id="temporal-analysis"></a>
 ## Temporal Analysis 🕰️
@@ -50,7 +53,7 @@ The Temporal Analysis module allows users to analyse the temporal trends of crim
 
 <a id="spatial-analysis"></a>
 ## Spatial Analysis 🗺️
-The Spatial Analysis component provides a comprehensive view of the geographic distribution of crimes, enabling the identification of high-risk areas and crime hotspots. By utlilising powerful mapping tools and geospatial techniques, our solution highlights the relationships between crime locations and other relevant factors, such as demographic and socioeconomic data. This invaluable information empowers law enforcement agencies to deploy resources more effectively and implement targeted crime prevention measures. 🌍
+The Spatial Analysis component is a dynamic geospatial visualization tool that transforms crime data into an informative, color-coded district map 🗺️. By allowing users to select between crime incidents, victim counts, and accused counts, it provides a nuanced view of crime distribution across different districts 🚨. This interactive feature enables law enforcement and policymakers to quickly identify crime patterns and allocate resources strategically 🛡️.
 
 ![Choropleth Analysis](assets/choropleth_map.PNG)
 
@@ -61,15 +64,15 @@ The Crime Hotspots component is a geospatial analysis tool that transforms compl
 
 ![Crime Hotspot Map](assets/crime_hotspot_map.PNG)
 
-Throughout the Crime Pattern Analysis component, we have seamlessly integrated interactive visualizations and intuitive user interfaces to ensure a seamless and engaging experience for our users. 🖥️ Whether you're a seasoned crime analyst or a policymaker seeking to drive change, Predictive Guardians' Crime Pattern Analysis tools will provide you with the insights and decision support you need to build safer and more resilient communities. 🌇
+
 
 <a id="criminal-profiling"></a>
 # Criminal Profiling 🕵️‍♀️
-The Criminal Profiling component of our solution provides deep insights into the characteristics and behavioral patterns of offenders, enabling law enforcement agencies to develop more targeted and effective crime prevention strategies. 📊
+The Criminal Profiling component of my solution provides deep insights into the characteristics and behavioral patterns of offenders, enabling law enforcement agencies to develop more targeted and effective crime prevention strategies. 📊
 
 <a id="demographic-analysis"></a>
 ## Demographic Analysis 👥
-Through thorough analysis of the age, gender, and caste distribution of criminals, our platform gives insights on the demographic factors associated with different types of criminal activities. 📊 This information can inform resource allocation, community engagement, and intervention programs tailored to specific high-risk populations.
+Through thorough analysis of the age, gender, and caste distribution of criminals, my platform gives insights on the demographic factors associated with different types of criminal activities. 📊 This information can inform resource allocation, community engagement, and intervention programs tailored to specific high-risk populations.
 
 For instance, the Age Distribution chart provides a visual representation of the age range of criminals, allowing stakeholders to identify potential age-related trends and design age-appropriate rehabilitation programs. 📈 Similarly, the Gender Analysis pie chart highlights the gender-based patterns, which can guide the development of gender-specific crime prevention initiatives. 🚺🚹
 
@@ -83,7 +86,7 @@ For instance, the Age Distribution chart provides a visual representation of the
 
 <a id="offense-category-analysis"></a>
 ## Offense Category Analysis 📊
-In addition to demographic insights, the Criminal Profiling component explores into the offense categories and sub-categories associated with criminal behavior. By analyzing the top crime groups and their corresponding sub-categories, our solution empowers law enforcement to understand the underlying drivers and dynamics of different types of crimes. 🔍
+In addition to demographic insights, the Criminal Profiling component includes the offense categories and sub-categories associated with criminal behavior. By analyzing the top crime groups and their corresponding sub-categories, my solution empowers law enforcement to understand the underlying drivers and dynamics of different types of crimes. 🔍
 
 The bar charts showcasing the Top 5 Most Frequent Crime Group Categories and the Top 5 Crime Groups Sub-Categories provide a clear and concise overview of the criminal landscape, enabling data-driven decision-making and the prioritization of resources. 📊
 
@@ -91,47 +94,60 @@ The bar charts showcasing the Top 5 Most Frequent Crime Group Categories and the
 
 ![Crime Sub Category](assets/crime_sub_category.PNG)
 
-Through the seamless integration of interactive visualizations and comprehensive data analysis, the Criminal Profiling component of Predictive Guardians equips law enforcement agencies with the insights they need to develop more effective crime prevention strategies, address root causes, and build safer communities. 🌇 By understanding the profiles and patterns of offenders, we can take proactive steps to interrupt the cycle of crime and promote lasting change. 🚀
 
 <a id="predictive-modeling"></a>
 # Predictive Modeling 🔮
-The Predictive Modeling component of our solution utilises advanced machine learning and data mining techniques to forecast future crime trends and patterns, empowering law enforcement agencies to stay one step ahead of the criminals. 🕵️‍♀️
+The Predictive Modeling component of my solution utilises machine learning and data mining techniques to forecast future crime trends and patterns, empowering law enforcement agencies to stay one step ahead of the criminals. 🕵️‍♀️
 
 <a id="recidivism-prediction"></a>
 ## Repeat Offense Prediction 🔁
-The repeat offense prediction module aims to identify individuals with a high likelihood of committing repeat crimes, enabling targeted interventions and rehabilitation programs. 🌟 By analyzing factors such as age, caste, profession, and criminal history, our model provides accurate predictions to help law enforcement agencies allocate resources more effectively and break the cycle of crime. 📊
+The repeat offense prediction module aims to identify individuals with a high likelihood of committing repeat crimes, enabling targeted interventions and rehabilitation programs. 🌟 By analyzing factors such as age, caste, profession, and criminal history, my model provides accurate predictions to help law enforcement agencies allocate resources more effectively and break the cycle of crime. 📊
 
-![Repeat Offense Prediction](assets/recidivism_prediction.PNG)
-
-
+![Repeat Offense Prediction](assets/repeat_offense_prediction.PNG)
 
 
-Throughout the Predictive Modeling component, I have integrated user-friendly interfaces and intuitive visualizations, making it easy for law enforcement agencies to access and interpret the insights generated by our advanced models. 💻 Whether you're a data analyst or a decision-maker, Predictive Guardians' Predictive Modeling tools will provide you with the foresight and decision support you need to build safer and more resilient communities. 🌍
 
 <a id="police-resource-allocation"></a>
 # Police Resource Allocation 🔒
-The Police Resource Allocation component of our solution provides a powerful optimization-based approach to the strategic deployment of police personnel, ensuring that law enforcement resources are utilized in the most efficient and effective manner. 📊
+The Police Resource Allocation component of my solution is designed to optimize the allocation of police personnel across districts and beats based on crime severity and sanctioned strengths. It includes optimization techniques to ensure efficient resource distribution. 📊
 
 <a id="user-input"></a>
 ## User Input 🙋‍♂️
-To begin the resource allocation process, users are prompted to select the specific unit or geographical area of interest. 🗺️ This allows our platform to tailor the optimization algorithms and recommendations to the unique characteristics and crime patterns of the selected region.
+To begin the resource allocation process, users are prompted to select the specific district. 🗺️ Choose between **default** and **customizable** sanctioned strengths for ASIs, CHCs, and CPCs. Default includes automatically populated based on the district’s predefined sanctioned strengths for:
+  - **Assistant Sub-Inspectors (ASI)**
+  - **Head Constables (CHC)**
+  - **Police Constables (CPC)**
 
-![User Input](assets/police-resource.PNG)
+Default values ensure a quick start without manual adjustment.
+You can customise values within a predefined range for flexibility.
+All the available police resources data were taken from this official source: https://ksp.karnataka.gov.in/page/Administration/K+S+P+Strength/en
 
-<a id="resource-allocation"></a>
-## Resource Allocation 🎯
-At the heart of the Police Resource Allocation component lies a complex optimization model, which takes into account a variety of factors, including the number of available police officers (by rank), the severity and frequency of past crimes, and the unique characteristics of each beat or patrol area. 🧠
-
-![Resource Allocation](assets/Polcie-resource.PNG)
+![User Input](assets/input_Res_Allocation.PNG)
 
 
-All the available police resources data were taken from [this source](https://ksp.karnataka.gov.in/page/Administration/K+S+P+Strength/en).
+## Allocation Algorithm 🤖
+<a id="allocation-algorithm"></a>
+The resource allocation is powered by a linear programming optimization algorithm with the following key steps:
 
-Using advanced mathematical programming techniques, our solution determines the optimal distribution of ASI (Assistant Sub-Inspectors), CHC (Head Constables), and CPC (Police Constables) officers across the specified beats, ensuring that high-risk areas receive the necessary resources and that the overall police force is deployed in a balanced and coordinated manner. 🚨
+**Objective**:
+  - Maximize the weighted sum of normalized crime severity and allocated resources.
 
-The output of the optimization process is presented in a clear and intuitive tabular format, allowing law enforcement agencies to visualize the recommended allocation of personnel and understand the rationale behind the decisions. 📊 This transparent approach empowers stakeholders to make informed decisions, promote accountability, and continuously refine the resource allocation strategies based on evolving needs and feedback.
+**Constraints**:
+  - Ensure the total allocated personnel do not exceed the sanctioned strengths.
+  - Guarantee each beat is assigned at least one officer.
+  - Proportionally allocate resources based on normalized crime severity.
+  - It also considers the factors such as the number of available police officers (by rank), the severity and frequency of past crimes, and the unique characteristics of each beat or patrol area.
 
-By integrating the Police Resource Allocation component into the Predictive Guardians platform, we enable law enforcement agencies to take a proactive and data-driven approach to public safety, ensuring that the right resources are in the right place at the right time. 🚔 This holistic solution helps to reduce response times, optimize patrol coverage, and ultimately, create safer and more resilient communities. 🌇
+
+
+
+
+The output of the optimization process is presented in a clear and intuitive tabular format with filter option to select the police units in the respective district to view allocation. 📊 
+
+![Sanctioned Strength Details](assets/view_display_Res_alloc.PNG)
+
+![Resource Allocation Display](assets/tab_coln_Res_alloc.PNG)
+
 
 <a id="continuous-learning-and-feedback"></a>
 # Continuous Learning and Feedback 💻🔍
@@ -185,36 +201,62 @@ Predictive Guardians includes a robust alert monitoring system that continuously
 ![E-mail message](assets/alert-2.PNG)
 
 
-By integrating the principles of continuous learning and feedback, Predictive Guardians ensures that the solution remains at the forefront of crime prevention technology, continuously adapting and improving to better serve the needs of law enforcement agencies and the communities they protect. 🌍 This commitment to iterative development and user-centric design is a hallmark of our platform, ensuring that Predictive Guardians remains a trusted and invaluable partner in the fight against crime. 🚀
+
+<a id="necessary-installations"></a>
+# Necessary Installations 🛠️
+
+To ensure the smooth functioning of this project, several installations are required:
+
+1. Clone this repository to your local machine.
+
+    ```bash
+    git clone https://github.com/VishalKumar-S/Predictive_Guardians.git
+    ```
+  
+2. Navigate to the Project Directory:
+    ```bash
+    cd Predictive_Guardians
+    ```
+
+3. Install the necessary Python packages.
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+
+<a id="running-the-project"></a>
+# Running the Project 🚀
+Follow these steps to run the streamlit app:
+
+
+   - Navigate to the Project Directory:
+  ```bash
+   cd Predictive_Guardians
+   ```
+
+   - Navigate to the app Directory:
+  ```bash
+   cd app
+   ```
+
+   - Run the Streamlit Application:
+  ```bash
+   streamlit run app.py
+   ```
+
+
+
+
 
 <a id="conclusion"></a>
 # Conclusion 🌟
-Predictive Guardians marks a revolutionary step in public safety, harnessing the power of data and AI to transform law enforcement. 🚀
 
-Our platform empowers agencies to:
-- Make data-driven decisions 📊
-- Anticipate and prevent crime 🔮
-- Optimize resource allocation 🎯
+Predictive Guardians is more than just a tool—it's a transformative approach to modern law enforcement. By integrating AI-driven insights, my solution empowers police forces to predict, prevent, and respond to crime more effectively than ever before. 🚔💡 From uncovering crime patterns to optimizing resource allocation, my platform bridges the gap between data and action, ensuring safer communities and smarter policing. 🌟
 
-Key features:
-- Advanced spatial and temporal analysis 🗺️
-- Sophisticated criminal profiling 🕵️‍♀️
-- Cutting-edge predictive modeling 💻
+With continuous learning and feedback at its core, Predictive Guardians evolves alongside the needs of its users, promoting collaboration and innovation. Together, we can build a future where crime is not just reacted to, but foreseen and prevented. 🌍🛡️
 
-By providing actionable intelligence, Predictive Guardians enables:
-- Identification of high-risk areas 🚨
-- Accurate crime trend forecasting 📈
-- Strategic personnel deployment 👮
-
-Looking ahead, we're committed to:
-- Collaborating with stakeholders 🤝
-- Innovating in AI and analytics 🧠
-- Addressing ethical considerations 🔍
-
-Join us in reshaping public safety. With Predictive Guardians, we're building a safer world where communities can flourish. 🌍🏙️
-
-Together, let's create a future where data drives safety, and technology serves humanity. 🛡️💡
-
+Let’s step into a safer tomorrow—one prediction at a time. 🔮✨
 
 
 
