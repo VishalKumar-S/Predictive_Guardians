@@ -22,16 +22,16 @@ def update_police_allocation():
             data_file_path = os.path.join(root_dir, 'Component_datasets', 'Resource_Allocation_Cleaned.csv')
             df = pd.read_csv(data_file_path)
             # Get the list of units
-            units = df["UNITS"].unique()
+            units = df["District Name"].unique()
 
             # Ask user to select the unit they want to update
             selected_unit = st.selectbox("Select the unit you want to update:", units)
 
             # Get the current allocation for the selected unit
-            current_allocation = df[df["UNITS"] == selected_unit]
-            current_asi = current_allocation["ASI"].iloc[0]
-            current_chc = current_allocation["CHC"].iloc[0]
-            current_cpc = current_allocation["CPC"].iloc[0]
+            current_allocation = df[df["District Name"] == selected_unit]
+            current_asi = current_allocation["Sanctioned Strength of Assistant Sub-Inspectors per District"].iloc[0]
+            current_chc = current_allocation["Sanctioned Strength of Head Constables per District"].iloc[0]
+            current_cpc = current_allocation["Sanctioned Strength of Police Constables per District"].iloc[0]
 
             col1, col2 = st.columns(2)
             with col1:
@@ -52,9 +52,9 @@ def update_police_allocation():
 
             if confirm_update:
                 # Update the dataframe with the new values
-                df.loc[df["UNITS"] == selected_unit, "ASI"] = new_asi
-                df.loc[df["UNITS"] == selected_unit, "CHC"] = new_chc
-                df.loc[df["UNITS"] == selected_unit, "CPC"] = new_cpc
+                df.loc[df["District Name"] == selected_unit, "Sanctioned Strength of Assistant Sub-Inspectors per District"] = new_asi
+                df.loc[df["District Name"] == selected_unit, "Sanctioned Strength of Head Constables per District"] = new_chc
+                df.loc[df["District Name"] == selected_unit, "Sanctioned Strength of Police Constables per District"] = new_cpc
 
                 st.success(f"Police resource allocation for {selected_unit} has been updated.")
 
