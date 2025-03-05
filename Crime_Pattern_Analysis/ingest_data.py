@@ -4,14 +4,14 @@ import re
 import logging
 import sys
 
-# Configure logging
+
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s', handlers=[logging.StreamHandler(sys.stdout)])
 
 def ingest_crime_pattern_analysis():
     fir_details = pd.read_csv("../datasets/FIR_Details_Data.csv")
     logging.info("Ingested the raw datasets for Crime Pattern Analysis")
 
-    #Select relevant columns from FIR dataset
+    #Feature selection
     fir_relevant = fir_details[['District_Name', 'UnitName', 'FIRNo', 'Year', 'Month',
     'FIR_Reg_DateTime', 'CrimeGroup_Name', 'Latitude', 'Longitude', 'Distance from PS', 'VICTIM COUNT', 'Accused Count']]
 

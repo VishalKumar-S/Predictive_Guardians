@@ -191,13 +191,13 @@ def organize_feedback_sessions():
 
 
 
-def get_next_feedback_session_date():
-    # Set the feedback session to be held on the first Monday of the month
-    target_weekday = calendar.MONDAY
-    now = datetime.datetime.now()
-    days_until_target = (target_weekday - now.weekday()) % 7
-    next_session_date = now + datetime.timedelta(days=days_until_target)
-    return next_session_date
+# def get_next_feedback_session_date():
+#     # Set the feedback session to be held on the first Monday of the month
+#     target_weekday = calendar.MONDAY
+#     now = datetime.datetime.now()
+#     days_until_target = (target_weekday - now.weekday()) % 7
+#     next_session_date = now + datetime.timedelta(days=days_until_target)
+#     return next_session_date
 
 def get_stakeholder_contact_info():
     # Retrieve the list of stakeholders and their contact information (e.g., from a database or a CSV file)
@@ -207,11 +207,11 @@ def get_stakeholder_contact_info():
     return stakeholders
 
 
-def display_model_explanations(recidivism_model, crime_type_model, hotspot_model):
-    # Provide detailed explanations for the predictions and recommendations of the models
-    display_recidivism_model_explanations(recidivism_model)
-    display_crime_type_model_explanations(crime_type_model)
-    display_hotspot_model_explanations(hotspot_model)
+# def display_model_explanations(recidivism_model, crime_type_model, hotspot_model):
+#     # Provide detailed explanations for the predictions and recommendations of the models
+#     display_recidivism_model_explanations(recidivism_model)
+#     display_crime_type_model_explanations(crime_type_model)
+#     display_hotspot_model_explanations(hotspot_model)
 
 
 

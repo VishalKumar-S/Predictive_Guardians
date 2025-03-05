@@ -22,7 +22,6 @@ from Continuous_Learning_and_Feedback import *
 import os
 
 
-# Determine the root directory of the project
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 with st.sidebar:
@@ -62,12 +61,12 @@ if selected == "Home":
     with col1:
         st.markdown(
             """
-            Predictive Guardians is an innovative, AI-powered solution that revolutionizes the way law enforcement agencies approach public safety. By utilizing advanced data analysis and machine learning, our platform empowers agencies to make data-driven decisions, enabling them to allocate resources more efficiently and effectively.
+            Predictive Guardians is an innovative, AI-powered solution that revolutionizes the way law enforcement agencies approach public safety. By utilizing advanced data analysis and machine learning, my platform empowers agencies to make data-driven decisions, enabling them to allocate resources more efficiently and effectively.
             """
         )
         st.markdown(
             """
-            Through integrating cutting-edge technologies, Predictive Guardians provides law enforcement agencies with the insights and actionable intelligence they need to stay one step ahead of criminals. Our solution covers a comprehensive suite of analytical tools, including:
+            Predictive Guardians provides law enforcement agencies with the insights and actionable intelligence they need to stay one step ahead of criminals. My solution covers a comprehensive suite of analytical tools, including:
             """
         )
         st.markdown(
@@ -81,7 +80,7 @@ if selected == "Home":
         )
         st.markdown(
             """
-            Join us on this transformative journey as we redefine the future of public safety and ensure that our communities are safe, secure, and resilient. With Predictive Guardians, the path to a safer tomorrow is within reach.
+            Join me on this transformative journey as we redefine the future of public safety and ensure that our communities are safe, secure, and resilient. With Predictive Guardians, the path to a safer tomorrow is within reach.
             """
         )
         if st.button("Learn More"):
@@ -101,13 +100,12 @@ if selected == "Crime Pattern Analysis":
 
     @st.cache_data
     def load_data():
-        # Get GeoJSON data
+        # Get GeoJSON data of all district co-ordinates of Karnataka
         url = "https://raw.githubusercontent.com/adarshbiradar/maps-geojson/master/states/karnataka.json"
         response = requests.get(url)
         geojson_data = response.json()
-        # Construct the file path
         data_file_path = os.path.join(root_dir, 'Component_datasets', 'Crime_Pattern_Analysis_Cleaned.csv')
-        # Read the data
+
         crime_pattern_analysis = pd.read_csv(data_file_path)
         mean_lat = crime_pattern_analysis['Latitude'].mean()
         mean_lon = crime_pattern_analysis['Longitude'].mean()
@@ -117,7 +115,7 @@ if selected == "Crime Pattern Analysis":
 
     mean_lat, mean_lon, geojson_data, crime_pattern_analysis = load_data()
 
-    # Title
+
     st.subheader("Temporal Analysis of Crime Data")
     temporal_analysis(crime_pattern_analysis)
 
@@ -127,9 +125,6 @@ if selected == "Crime Pattern Analysis":
     
 
 
-
-
-     
     st.subheader("Crime Hotspot Map")
     crime_pattern_analysis = crime_pattern_analysis.reset_index(drop=True)
 

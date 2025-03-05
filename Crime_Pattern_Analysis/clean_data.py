@@ -5,7 +5,7 @@ import logging
 import sys
 from sklearn.model_selection import train_test_split
 
-# Configure logging
+
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s', handlers=[logging.StreamHandler(sys.stdout)])
 
 
@@ -15,6 +15,7 @@ def clean_data_crime_pattern_analysis(clean_df):
     #Drop Duplicates
     clean_df.drop_duplicates(inplace = True)
     logging.info(" Duplicate observations are removed")
+
 
     #Rename features
     clean_df['District_Name'] = clean_df['District_Name'].replace({
@@ -30,18 +31,18 @@ def clean_data_crime_pattern_analysis(clean_df):
         'Kalaburagi City': 'Kalaburagi',         
         'Hubballi Dharwad City':'Dharwad' 
     }) 
-    logging.info("District names are renamed, to match with the geojson district map of Karnataka to use it as a base map, for further geo-spatial analysis")
+    logging.info("District names are renamed, to match with the geojson district map names of Karnataka to use it as a base map, for geo-spatial analysis")
 
-    # Impute unknown
+    # Impute unknown values in 'Distance from PS" column
     columns_to_impute_unknown = ['Distance from PS']
 
     clean_df[columns_to_impute_unknown] = clean_df[columns_to_impute_unknown].fillna('Unknown')
 
     logging.info(" Missing observations are imputed")
 
-    #Impute Latitude and Longitude values
-    # Load  datasets
     crime_pattern_analysis = clean_df.copy()
+
+    #Get Karnataka Police Stations and their unit's lat-long details
     PS_lat_long = pd.read_csv('../datasets/Polce_Stations_Lat_Long.csv')
 
     # merge both datasets
@@ -51,7 +52,8 @@ def clean_data_crime_pattern_analysis(clean_df):
     crime_data['Latitude_first'] = crime_data['Latitude_second']
     crime_data['Longitude_first'] = crime_data['Longitude_second']
 
-    # Drop unnecessary columns
+
+    # Drop unnecessary column
     crime_data = crime_data.drop(['Latitude_second', 'Longitude_second'], axis=1)
   
     # Rename the features
@@ -59,7 +61,7 @@ def clean_data_crime_pattern_analysis(clean_df):
 
     logging.info(" Imputed missing crime's latitude and longitude with temporary values as Police station's co-ordinates")
 
-    # Preprocess FIR_Reg_DateTime to extract date features only
+    # Extract date value alone from FIR_Reg_DateTime
     crime_data['FIR_Reg_Date'] = crime_data['FIR_Reg_DateTime'].str.split(' ').str[0]
 
     # Convert FIR_Reg_Date to datetime format
@@ -78,40 +80,55 @@ def clean_data_crime_pattern_analysis(clean_df):
     return crime_data
 
 
-
 def extract_direction_distance(string):
+  # This method is used to extract the distance, it's unit measured and convert all the units to standarised unit of KM and the direction of the crime from the Police Station in the string
 
   # Distance units pattern reg-x (m-metres,f-feet, k- refers to KM observations)
+
   distance_pattern = r'\d+'
+
+  #Filter only meters, exlcudes KM's and feet  and convert it to KM
   if not re.search(r'k', string, re.IGNORECASE) and not re.search(r'feet', string, re.IGNORECASE) and re.search(r'm', string, re.IGNORECASE):
     match = re.search(distance_pattern, string)
     if match:
       distance = int(match.group())/1000
     else:
       distance = 0
+
+  #Filter only feet, exlcudes KM's and meters and convert it to KM
   elif not re.search(r'k', string, re.IGNORECASE) and re.search(r'feet', string, re.IGNORECASE):
     match = re.search(distance_pattern, string)
     if match:
       distance = 0
     else:
       distance = 0
+
+  # Distance is already in KM only, no need to convert type.
   elif re.search(r'k', string, re.IGNORECASE):
     match = re.search(distance_pattern, string)
     if match:
       distance = int(match.group())
+
       # Handle outlier/ wrongly written KM distance values
       distance_count = len(str(distance))
       if distance_count > 2:
         distance = 0
+
     else:
       distance = 0
+
+  #Handle any other human- errored wrong distance metric names    
   else:
     distance = 0
 
+  # Extract the direction from the string
   direction_pattern = r'\b(?:north|south|east|west)\b'
-  match = re.search(direction_pattern, string, re.IGNORECASE)  # Using re.IGNORECASE to perform case-insensitive matching
+
+  # re.IGNORECASE is used for case-insensitive matching
+  match = re.search(direction_pattern, string, re.IGNORECASE)
   if match:
-    matched_string = match.group()  # Extract the matched string using match.group()
+    matched_string = match.group()  
+    # Extract the matched string using match.group()
     direction = matched_string
   else:
       direction = 'None'
@@ -120,6 +137,9 @@ def extract_direction_distance(string):
 
 
 def calculate_crime_coordinates(lat, lon, direction, distance):
+    ##Here, we convert the lat and long from degrees to radians, to update the values, We can't update the lat and long if it's in degrees itself, to add the distance between the crime location and police station to the police station's latitude and longitude, to find the actual crime'ss location, we need to  convert the distances to angular distance, by dividing the actual distance by earth's radius, since arc length i.e distance travelled between 2 points (police station and crime location) in teh surface of a sphere (earth), = Teta*radius, i.e Angular distance teta in radians =  distance/radius.
+
+
     # Earth radius in kilometers
     earth_radius = 6371.0
 
@@ -144,7 +164,7 @@ def calculate_crime_coordinates(lat, lon, direction, distance):
         new_lat = lat
         new_lon = math.degrees(lon_rad - angular_distance)
     else:
-        # Invalid direction, return original coordinates
+        # Invalid direction, return original coordinates as we cannot identify the crime location
         new_lat = lat
         new_lon = lon
 
@@ -168,7 +188,6 @@ def update_crime_lat_long(new_data):
     new_data = new_data.drop("Distance from PS", axis=1)
 
     # Remove outlier co-ordinates
-    
     new_data = new_data[~((new_data["Latitude"] > 19) |
                             (new_data["Longitude"] > 78) |
                             (new_data["Latitude"] < 11) |

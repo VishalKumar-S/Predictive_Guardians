@@ -7,6 +7,7 @@ from email import encoders
 import logging
 import streamlit as st
 import datetime
+import socket
 
 # Determine the root directory of the project
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -18,7 +19,6 @@ def send_feedback_session_invitation(session_date, session_time, email_addresses
     for email_address in email_addresses:
         receiver_email = email_address
         password = os.environ.get('EMAIL_PASSWORD')
-        print("Password is",password)
         subject = f"Invitation: Predictive Guardians Feedback Session on {session_date.strftime('%B %d, %Y')} at {session_time.strftime('%I:%M %p')}"
 
         body = f"""
@@ -56,6 +56,7 @@ def send_feedback_session_invitation(session_date, session_time, email_addresses
                 f"attachment; filename={os.path.basename(attachment_path)}",
             )
             message.attach(part)
+
 
         # Send the email
         try:

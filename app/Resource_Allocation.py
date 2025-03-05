@@ -17,6 +17,7 @@ def optimise_resource_allocation(district_name, sanctioned_asi, sanctioned_chc, 
     # Objective function: Maximize the sum of weighted severity scores
     problem += lpSum(district_name.loc[i, 'Normalised Crime Severity'] * (asi_vars[i] + chc_vars[i] + cpc_vars[i]) for i in district_name.index)
 
+
     # Constraints
     # Constraint: Total officers in each district should not exceed sanctioned strength
     problem += lpSum(asi_vars[i] for i in district_name.index) <= sanctioned_asi
@@ -25,7 +26,7 @@ def optimise_resource_allocation(district_name, sanctioned_asi, sanctioned_chc, 
 
     # Constraint: Each beat must have at least one officer
     for i in district_name.index:
-        problem += asi_vars[i] + chc_vars[i] + cpc_vars[i] >= 1
+        problem+= asi_vars[i] + chc_vars[i] + cpc_vars[i] >= 1
 
     # Constraint: Allocation based on normalized severity
     for i in district_name.index:
