@@ -1,5 +1,5 @@
 streamlit
-numpy
+numpy==1.24.3
 pandas==1.5.3
 streamlit-option-menu
 streamlit-folium
