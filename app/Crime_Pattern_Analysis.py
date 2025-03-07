@@ -64,14 +64,14 @@ def temporal_analysis(crime_pattern_analysis):
 
 def crime_hotspot_analysis(df, mean_lat, mean_lon):
     # Create base map
-    m = folium.Map(location=[mean_lat, mean_lon], zoom_start=8)
+    m = folium.Map(location=[mean_lat, mean_lon], zoom_start=7)
 
     # Create colormap
     colormap = cm.LinearColormap(colors=['blue', 'yellow', 'red'], vmin=0, vmax=df['Count'].max())
 
     # Add heatmap
     HeatMap(df[['Latitude', 'Longitude', 'Count']].values.tolist(), 
-            gradient={0.4: 'blue', 0.65: 'yellow', 1: 'red'}, 
+            gradient={"0.4": 'blue', "0.65": 'yellow', "1.0": 'red'}, 
             radius=15).add_to(m)
 
     # Perform DBSCAN clustering
