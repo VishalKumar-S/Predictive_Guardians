@@ -78,7 +78,15 @@ def predictive_modeling_recidivism():
     # Load the model
     model = load_model_recidivism()
 
-    scaler = joblib.load('../models/Recidivism_model/scaler.pkl')
+    # Get the base path for the app
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    # Go up one level to the project root
+    project_root = os.path.abspath(os.path.join(base_path, '..'))
+    # Create the full path to the scaler file
+    scaler_path = os.path.join(project_root, 'models', 'Recidivism_model', 'scaler.pkl')
+    # Load the scaler using the absolute path
+    scaler = joblib.load(scaler_path)
+    
 
     cleaned_data = load_data_recidivism()
     # Get unique values for categorical features
@@ -96,7 +104,8 @@ def predictive_modeling_recidivism():
     present_city = st.selectbox("Criminal Present City", unique_cities)
 
     # Perform Encoding
-    f = open("../models/Recidivism_model/frequency_encoding.json")
+    frequency_path = os.path.join(project_root, 'models', 'Recidivism_model', 'frequency_encoding.json')
+    f = open(frequency_path)
     frequency = json.load(f)
     caste = frequency["Caste"][caste]
     profession = frequency["Profession"][profession]
