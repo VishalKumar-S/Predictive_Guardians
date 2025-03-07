@@ -89,7 +89,7 @@ if selected == "Home":
 
     with col2:
         data_file_path = os.path.join(root_dir, 'assets', 'Home_Page_image.jpg')
-        st.image(data_file_path, use_column_width=True)
+        st.image(data_file_path, use_container_width=True)
 
 
 if st.session_state.get("selected_page", "Home") == "Documentation and Resources":
